@@ -16,13 +16,12 @@ class HabitScreen extends Component {
 		super(props);
 	}
 
+	habitID=this.props.route.params.habitId;
+
   	render () {
 	  	return (
 				<View style={styles.border}>
-						<Button
-						title="Go to Home"
-						onPress={() => this.props.navigation.navigate('Home')}/>
-					<Habit wait={200} getCounter={this.props.getCounter}/>
+					<Habit wait={700} habitId={this.habitID} getCounter={this.props.getCounter}/>
 				</View>
 		);
 	}

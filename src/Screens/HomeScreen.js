@@ -4,9 +4,11 @@ import {
   StyleSheet,
   View,
   Text,
-  Button
+  Button,
+  Dimensions,
+  ScrollView
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import Home from "../components/Home";
 
 class HomeScreen extends Component {
 	constructor(props)
@@ -14,25 +16,36 @@ class HomeScreen extends Component {
 		super(props);
 	}
 
-    
+	willFocus = this.props.navigation.addListener(
+		'willFocus',
+		payload => {
+		this.forceUpdate();
+		}
+  	);
+
+	
+
+
 
   	render() {
 		  	return (
+				<ScrollView style={styles.scrollViewHome} contentContainerStyle={{flexGrow:1}} keyboardShouldPersistTaps="always">
     		<View style={styles.border}>
-				  <Button
-        title="Go to Habit"
-        onPress={() => this.props.navigation.navigate('Habit')}
-      />
-      			<Text>Home</Text>
+					<Home navigation={ this.props.navigation } onGoingBack={this.re_renderOnGoingBack} />
     		</View>
+				</ScrollView>
   		);
 	}
 }
 
 const styles = StyleSheet.create({
 	border: {
-		flex:1,
+		flex: 1,
 		backgroundColor: "#D9CEC1",
+	},
+	scrollViewHome: {
+		backgroundColor: "white",
+		flex:1
 	}
 });
 

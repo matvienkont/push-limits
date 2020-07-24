@@ -29,7 +29,6 @@ class App extends Component
 	counter = 0;
 	getCounter = (childCounter) => {
 		this.counter = childCounter;
-		console.log(this.counter);
 	}
 
 
@@ -50,11 +49,26 @@ class App extends Component
 											headerStatusBarHeight: 0,
 											headerTitleStyle: {
 												fontWeight: 'bold',
-											},
+												fontFamily: "monospace", 
+												fontSize: 20
+											}
 											}}>
 					{ (props) => <HabitScreen {...props} getCounter={this.getCounter.bind(this)} /> }
 					</Stack.Screen> 
-					<Stack.Screen name="Home">
+					<Stack.Screen name="Home" options={{
+										 	title: 'Home',
+											headerStyle: {
+												backgroundColor: '#D9CEC1'
+											},
+											headerTitleAlign: "center",	
+											headerTintColor: '#fff',
+											headerStatusBarHeight: 0,
+											headerTitleStyle: {
+												fontWeight: 'bold',
+												fontFamily: "monospace", 
+												fontSize: 20
+											},
+											}}>
 						{(props) => <HomeScreen {...props} />}
 					</Stack.Screen>
 				</Stack.Navigator>
