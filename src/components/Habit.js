@@ -19,7 +19,6 @@ class Habit extends Component
         this.state = {
             list: [], 
             counter: 0,
-            hidden: false,
             button_disabled: true,
             date_last_press: {},
             fadeAnim: new Animated.Value(0)
@@ -126,7 +125,7 @@ class Habit extends Component
             object = JSON.stringify(object);
             await AsyncStorage.setItem(this.props.habitId, object);
 
-            if(this.state.counter <= 21) 
+            if(this.state.counter < 21) 
             this.setState((state) => {
                 return {
                 button_disabled: true,
@@ -175,29 +174,42 @@ class Habit extends Component
 
         this.returnComponents();
 
-        setTimeout(() => {
-            this.setState({hidden: false});
-        }, this.props.wait);
-
         this.handleButtonTime();
+
+        
+    }
+
+    checkAvailabillity = setInterval(() => 
+        { 
+            this.handleButtonTime();
+            clearInterval(this);
+        }, 15000);
+    
+
+    componentWillUnmount () 
+    {
+       clearInterval(this.checkAvailabillity); 
     }
 
     handleButtonTime = async () => 
     {   
-        var object = await AsyncStorage.getItem(this.props.habitId);
-        object = JSON.parse(object);
+        if ( this.state.counter < 21)
+        {
+            var object = await AsyncStorage.getItem(this.props.habitId);
+            object = JSON.parse(object);
 
-        var currentDate = new Date().getTime()
-        if(currentDate - object.last_button_press > 10000)
-        {
-            this.setState({
-                button_disabled: false
-            });
-        } else 
-        {
-            this.setState({
-                button_disabled: true
-            });
+            var currentDate = new Date().getTime()
+            if(currentDate - object.last_button_press > 10000)
+            {
+                this.setState({
+                    button_disabled: false
+                });
+            } else 
+            {
+                this.setState({
+                    button_disabled: true
+                });
+            }
         }
     }
     

@@ -21,7 +21,7 @@ class HabitScreen extends Component {
   	render () {
 	  	return (
 				<View style={styles.border}>
-					<Habit wait={700} habitId={this.habitID} getCounter={this.props.getCounter}/>
+					<Habit habitId={this.habitID} getCounter={this.props.getCounter}/>
 				</View>
 		);
 	}

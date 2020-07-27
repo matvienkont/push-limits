@@ -31,7 +31,6 @@ class App extends Component
 		this.counter = childCounter;
 	}
 
-
 	render () {
 		return (
 			<>
@@ -68,6 +67,13 @@ class App extends Component
 												fontFamily: "monospace", 
 												fontSize: 20
 											},
+									        headerRight: () => (
+												<Button
+												onPress={() => this.getInputState(true)}
+												title="Info"
+												color="#fff"
+												/>
+											)
 											}}>
 						{(props) => <HomeScreen {...props} />}
 					</Stack.Screen>

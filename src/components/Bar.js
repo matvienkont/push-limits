@@ -10,6 +10,8 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 
 import Canvas from "react-native-canvas";
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { normalize } from "../helpers/normalize"
 
 class Bar extends Component 
 {
@@ -23,20 +25,52 @@ class Bar extends Component
 
     propsCounter = this.props.progress;
 
-    x_loc = Dimensions.get('window').width/2;
-    y_loc = Dimensions.get('window').height/2;
-    radius = 10;
-    angle = 0;
+    
 
     handleCanvas = (canvas) => 
     {
+        const screenWidth = Dimensions.get('window').width;
+        const screenHeight = Dimensions.get('window').height;
+
+        
+
+        var shiftFactor = 30;
+        var radius = 9;
+        var angle = 0;
+        var lineWidth = 13;
+
+
+        if(screenWidth < 361)
+        {
+            radius = 8;
+            var lineWidth = 11;
+        } else if (screenWidth < 380)
+                {
+                    radius = 8.5;
+                    var lineWidth = 12;
+                    shiftFactor = 33;
+                } else if (screenWidth < 400)
+                    {
+                        radius = 9;
+                        var lineWidth = 13;
+                        shiftFactor = 37
+                    } else 
+                        {
+                            radius = 10;
+                            var lineWidth = 15;
+                            shiftFactor = 40;
+                        }
+
+        var x_loc = (screenWidth+shiftFactor)/2;
+        var y_loc = screenHeight/2;
+
         if (canvas !== null) 
         {
                 const ctx = canvas.getContext('2d');
 
                     
-                canvas.width  = Dimensions.get('window').width;
-                canvas.height = Dimensions.get('window').height;
+                canvas.width  = screenWidth;
+                canvas.height = screenHeight;
 
                 var i = 0;
                 for(i; i<21; i++)
@@ -50,21 +84,21 @@ class Bar extends Component
                                         colour = "#FFF"
                         
                     ctx.beginPath();
-                    ctx.moveTo(this.x_loc, this.y_loc);
+                    ctx.moveTo(x_loc, y_loc);
                     for (var n = 0; n < 10; n++) 
                     {
-                        ctx.lineWidth = 15;
+                        ctx.lineWidth = 11;
                         ctx.strokeStyle = colour;
-                        this.radius += 0.05;
-                        this.angle += ((Math.PI * 2) / 53);
+                        radius += 0.05;
+                        angle += ((Math.PI * 2) /53);
                         
-                        this.x_loc = this.x_loc + this.radius * Math.cos(this.angle);
-                        this.y_loc = this.y_loc + this.radius * Math.sin(this.angle);
-                        ctx.lineTo(this.x_loc, this.y_loc);
+                        x_loc = x_loc + radius * Math.cos(angle);
+                        y_loc = y_loc + radius * Math.sin(angle);
+                        ctx.lineTo(x_loc, y_loc);
                     }
                         ctx.stroke();
-                    this.x_loc = this.x_loc + this.radius * Math.cos(this.angle);
-                    this.y_loc = this.y_loc + this.radius * Math.sin(this.angle);
+                    x_loc = x_loc + radius * Math.cos(angle);
+                    y_loc = y_loc + radius * Math.sin(angle);
                 
                 }
         }
@@ -77,7 +111,7 @@ class Bar extends Component
         return { 
             position: "absolute",
             backgroundColor: "rgba(52, 52, 52, 0)",
-            marginLeft: 20
+            width: "100%"
         }
     };
 
@@ -89,7 +123,9 @@ class Bar extends Component
             var returnedCanvas = 
                 <View style={this.borderMargin()} 
                         onLayout={(event) => { var {x, y, width, height} = event.nativeEvent.layout;}}>
+                        <View style={styles.canvasWrapper} >
                             <Canvas key={"habit"} ref={this.handleCanvas}/>
+                        </View>
                 </View>;
         
         this.setState((state) => { return { spiral: returnedCanvas }});
@@ -133,7 +169,11 @@ const styles = StyleSheet.create({
 		backgroundColor: "rgba(52, 52, 52, 0)",
 		borderWidth: 5,
 	},
-    button: {
+    canvasWrapper: {
+        width: "100%",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
     }
 });
 

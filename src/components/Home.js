@@ -6,8 +6,14 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  Button,
+  Image
 } from 'react-native';
+
+
+import PlusIcon from '../icons/plus-circle-512.png';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 
 class Home extends Component 
@@ -18,7 +24,8 @@ class Home extends Component
         this.state = {
             habits: [],
             deleteRequest: false,
-            deleteRequestHabit: ''
+            deleteRequestHabit: '',
+            inputWindow: false
         };
     }
 
@@ -125,9 +132,49 @@ class Home extends Component
         }
     }
 
+    textInputSubmit = (event) => 
+    {
+        if(event.nativeEvent.text)
+        this.setItemtoAsyncStorage(event.nativeEvent.text); 
+        
+        this.textInput.clear(); 
+        
+        this.setState({ inputWindow: false })
+    }
+
+    showInputWindow = () => 
+    {
+        return (
+            <View style={this.confirmationWrapper()}>
+                <View style={styles.styleConfirmationWindow} >
+                    <TextInput 
+                                style={styles.habitInput}
+                                returnKeyType='done'
+                                onSubmitEditing={(event) => this.textInputSubmit(event) }
+                                placeholder="Enter habit"
+                                ref={input => { this.textInput = input }} />
+                    <TouchableOpacity style={styles.cancelInput} onPress={() => this.setState({ inputWindow: false })}>
+                            <Text style={styles.buttonText}>Discard</Text>
+                    </TouchableOpacity>
+                </View>
+                    
+            </View>
+        );
+    }
+
     componentDidMount()
     {
         this.showValue();
+        this.props.navigation.setOptions({
+            headerRight: () => (
+                    <TouchableOpacity onPress={() => this.setState({ inputWindow: true })} >
+                        <Image
+                            style={styles.plusIcon}
+                            source={PlusIcon}
+                        />
+                    </TouchableOpacity>
+                ),
+            });
     }
 
     renderHabits = () => 
@@ -147,7 +194,14 @@ class Home extends Component
                                     <View key={"view"+suffix} style={styles.habitView}>
                                         <Text key={"text"+suffix} style={styles.habitText}>
                                             { habitTitle } { progressInPercent }%
-                                        </Text>
+                                        </Text>  
+
+                                        <AnimatedCircularProgress
+                                        size={20}
+                                        width={7}
+                                        fill={progressInPercent}
+                                        tintColor="#D99982"
+                                        backgroundColor="#FFF" />
                                     </View>
                                 </TouchableOpacity> 
                             ) 
@@ -180,15 +234,9 @@ class Home extends Component
         return (
             <View>
                 <View style={ styles.fullWidth }> 
-                    
                     { this.renderHabits() }
-                        <TextInput 
-                            style={styles.habitInput}
-                            returnKeyType='done'
-                            onSubmitEditing={(event) => { this.setItemtoAsyncStorage(event.nativeEvent.text); this.textInput.clear() }}
-                            placeholder="Enter habit"
-                            ref={input => { this.textInput = input }} />
                 </View>
+            { this.state.inputWindow && this.showInputWindow() }
             { this.returnConfirmationWindow() }
             </View>
         );
@@ -200,7 +248,10 @@ class Home extends Component
 const styles = StyleSheet.create({
     habitInput: {
         backgroundColor: "white",
-        marginBottom: 20
+        
+        width: "90%",
+        borderRadius: 10,
+        height: "25%",
     },
     habitTouchableOp: {
         backgroundColor: "#E0D5C8",
@@ -225,7 +276,11 @@ const styles = StyleSheet.create({
     habitText: {
         fontFamily: "normal",
         fontSize: 16,
-        color: "#66493D"
+        color: "#66493D",
+        paddingLeft: "2%",
+        paddingRight: "2%",
+        width: "85%",
+        textAlign: "center"
     },
     styleConfirmationWindow: {
         marginTop: "10%",
@@ -255,8 +310,11 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "white"
     },
-    habitTitleDeleteRequest: {
-    },
+    habitTitleDeleteRequest:
+    {
+        paddingLeft: "2%",
+        paddingRight: "2%"
+    },    
     habitTitleDeleteRequestWrapper: {
         borderRadius: 10,
         height: "25%",
@@ -264,6 +322,30 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: "center",
         justifyContent: "center"
+    },
+    plusIcon: {
+        width: 35,
+        height: 35,
+        marginTop: 2,
+        marginRight: 12,
+        opacity: 0.5
+    },
+    cancelInput: {
+        backgroundColor: "#D99982",
+        width: "50%",
+        height: "15%",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 5,
+        borderRadius: 10
+    },
+    habitView: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: "100%",
+        height: "100%"
     }
 });
 
