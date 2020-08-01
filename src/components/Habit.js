@@ -9,7 +9,10 @@ import {
 } from "react-native"
 
 import AsyncStorage from '@react-native-community/async-storage';
+import DeviceInfo from "react-native-device-info";
 import Bar from "./Bar";
+
+import { dynamicButtonParameters } from "../helpers/buttonParameters";
 
 class Habit extends Component 
 {
@@ -26,18 +29,12 @@ class Habit extends Component
         this.opacityRef = React.createRef();
     }
 
-    returnCenter = () => {
-        return {
-            x: Dimensions.get('window').width/2,
-            y: Dimensions.get('window').height/2
-        }    
-    }
-
     styleObjectForButton = () => {
-        var center = {
-            x_loc: this.returnCenter().x-58,
-            y_loc: this.returnCenter().y+36
-        };
+        
+        const screenWidth = Dimensions.get('window').width;
+        const screenHeight = Dimensions.get('window').height;
+
+        const center = dynamicButtonParameters(screenWidth, screenHeight);
 
         var colour = this.state.button_disabled ? "rgba(217, 196, 171, 0.4)" : "rgba(217, 196, 171, 1)";
         
@@ -77,10 +74,11 @@ class Habit extends Component
     }
 
     styleObjectForButtonWrapper = () => {
-        var center = {
-            x_loc: this.returnCenter().x-58,
-            y_loc: this.returnCenter().y+36
-        };
+        
+        const screenWidth = Dimensions.get('window').width;
+        const screenHeight = Dimensions.get('window').height;
+
+        const center = dynamicButtonParameters(screenWidth, screenHeight);
 
             return {
                 left: center.x_loc,
@@ -176,7 +174,16 @@ class Habit extends Component
 
         this.handleButtonTime();
 
-        
+        this.props.navigation.setOptions({
+            headerStyle: { 
+                            backgroundColor: '#D9CEC1', 
+                            height: DeviceInfo.hasNotch() ? 110 : 60 
+                        },
+            headerTitleStyle: 
+                            {
+                                paddingTop: DeviceInfo.hasNotch() ? 30 : 0 
+                            }
+            });
     }
 
     checkAvailabillity = setInterval(() => 

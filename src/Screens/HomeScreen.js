@@ -29,11 +29,10 @@ class HomeScreen extends Component {
 
   	render() {
 		  	return (
-				<ScrollView style={styles.scrollViewHome} contentContainerStyle={{flexGrow:1}} keyboardShouldPersistTaps="always">
+				
     		<View style={styles.border}>
 					<Home navigation={ this.props.navigation } onGoingBack={this.re_renderOnGoingBack} />
     		</View>
-				</ScrollView>
   		);
 	}
 }

@@ -41,7 +41,7 @@ class App extends Component
 					<Stack.Screen name="Habit" options={{
 										 	title: 'Habit',
 											headerStyle: {
-												backgroundColor: '#D9CEC1'
+												backgroundColor: '#D9CEC1',
 											},
 											headerTitleAlign: "center",	
 											headerTintColor: '#fff',

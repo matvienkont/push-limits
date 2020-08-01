@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import Canvas from "react-native-canvas";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { normalize } from "../helpers/normalize"
+import { dynamicSpiralParameters } from "../helpers/spiralParameters"
 
 class Bar extends Component 
 {
@@ -26,49 +26,18 @@ class Bar extends Component
     propsCounter = this.props.progress;
 
     
-
+    
     handleCanvas = (canvas) => 
     {
         const screenWidth = Dimensions.get('window').width;
         const screenHeight = Dimensions.get('window').height;
-
-        
-
-        var shiftFactor = 30;
-        var radius = 9;
-        var angle = 0;
-        var lineWidth = 13;
-
-
-        if(screenWidth < 361)
-        {
-            radius = 8;
-            var lineWidth = 11;
-        } else if (screenWidth < 380)
-                {
-                    radius = 8.5;
-                    var lineWidth = 12;
-                    shiftFactor = 33;
-                } else if (screenWidth < 400)
-                    {
-                        radius = 9;
-                        var lineWidth = 13;
-                        shiftFactor = 37
-                    } else 
-                        {
-                            radius = 10;
-                            var lineWidth = 15;
-                            shiftFactor = 40;
-                        }
-
-        var x_loc = (screenWidth+shiftFactor)/2;
-        var y_loc = screenHeight/2;
+  
+        const spiralParams = dynamicSpiralParameters(screenWidth, screenHeight)
 
         if (canvas !== null) 
         {
                 const ctx = canvas.getContext('2d');
 
-                    
                 canvas.width  = screenWidth;
                 canvas.height = screenHeight;
 
@@ -84,21 +53,21 @@ class Bar extends Component
                                         colour = "#FFF"
                         
                     ctx.beginPath();
-                    ctx.moveTo(x_loc, y_loc);
+                    ctx.moveTo(spiralParams.x_loc, spiralParams.y_loc);
                     for (var n = 0; n < 10; n++) 
                     {
-                        ctx.lineWidth = 11;
+                        ctx.lineWidth = spiralParams.lineWidth;
                         ctx.strokeStyle = colour;
-                        radius += 0.05;
-                        angle += ((Math.PI * 2) /53);
+                        spiralParams.radius += 0.05;
+                        spiralParams.angle += ((Math.PI * 2) /53);
                         
-                        x_loc = x_loc + radius * Math.cos(angle);
-                        y_loc = y_loc + radius * Math.sin(angle);
-                        ctx.lineTo(x_loc, y_loc);
+                        spiralParams.x_loc = spiralParams.x_loc + spiralParams.radius * Math.cos(spiralParams.angle);
+                        spiralParams.y_loc = spiralParams.y_loc + spiralParams.radius * Math.sin(spiralParams.angle);
+                        ctx.lineTo(spiralParams.x_loc, spiralParams.y_loc);
                     }
                         ctx.stroke();
-                    x_loc = x_loc + radius * Math.cos(angle);
-                    y_loc = y_loc + radius * Math.sin(angle);
+                    spiralParams.x_loc = spiralParams.x_loc + spiralParams.radius * Math.cos(spiralParams.angle);
+                    spiralParams.y_loc = spiralParams.y_loc + spiralParams.radius * Math.sin(spiralParams.angle);
                 
                 }
         }

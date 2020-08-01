@@ -7,13 +7,16 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
-  Button,
+  ScrollView,
   Image
 } from 'react-native';
 
 
 import PlusIcon from '../icons/plus-circle-512.png';
+import GoIcon from '../icons/go.png';
+
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import DeviceInfo from "react-native-device-info";
 
 
 class Home extends Component 
@@ -25,7 +28,8 @@ class Home extends Component
             habits: [],
             deleteRequest: false,
             deleteRequestHabit: '',
-            inputWindow: false
+            inputWindow: false,
+            inputText: ''
         };
     }
 
@@ -60,11 +64,9 @@ class Home extends Component
         return {
             position: "absolute",
             backgroundColor: "rgba(217, 206, 193, 0.9)",
-            height: Dimensions.get("window").height,
+            height: Dimensions.get("screen").height,
             left: 0,
             right: 0,
-            top: 0,
-            bottom: 0,
             shadowColor: "rgba(217, 196, 171, 0.3)",
             shadowOffset: {
                 width: 0,
@@ -121,10 +123,10 @@ class Home extends Component
                             <Text style={ styles.habitTitleDeleteRequest }>{habitTitle}</Text>
                         </View>    
                         <TouchableOpacity style={styles.deleteButton} onPress={() => this.deleteHabit() }>
-                            <Text style={styles.buttonText}>Let it go</Text>
+                            <Text style={styles.buttonText}>Delete</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.cancelButton} onPress={() => this.setState({ deleteRequest: false })}>
-                            <Text style={styles.buttonText}>Let it be</Text>
+                            <Text style={styles.buttonText}>Keep it</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -132,10 +134,17 @@ class Home extends Component
         }
     }
 
-    textInputSubmit = (event) => 
+    textInputSubmit = (text) => 
     {
-        if(event.nativeEvent.text)
-        this.setItemtoAsyncStorage(event.nativeEvent.text); 
+        if (text)
+            {
+                const regex = /^\w+/;
+                var result = regex.test(text);
+                
+                if(result)
+                    this.setItemtoAsyncStorage(text);
+            }
+        
         
         this.textInput.clear(); 
         
@@ -145,16 +154,29 @@ class Home extends Component
     showInputWindow = () => 
     {
         return (
-            <View style={this.confirmationWrapper()}>
-                <View style={styles.styleConfirmationWindow} >
+            <View scrollEnabled={false} style={this.confirmationWrapper()}>
+                <View scrollEnabled={false} style={styles.styleConfirmationWindow} >
                     <TextInput 
+                                autoFocus
                                 style={styles.habitInput}
                                 returnKeyType='done'
-                                onSubmitEditing={(event) => this.textInputSubmit(event) }
+                                maxLength={50}
+                                onSubmitEditing={(event) => this.textInputSubmit(event.nativeEvent.text) }
+                                onChangeText={(text)=> this.setState({ inputText: text}) }
                                 placeholder="Enter habit"
-                                ref={input => { this.textInput = input }} />
+                                ref={input => { this.textInput = input }}
+                                paddingRight={42}
+                                >
+                        
+                    </TextInput>
+                        <TouchableOpacity style={styles.goIconWrapper} onPress={() => this.textInputSubmit(this.state.inputText)}>
+                            <Image
+                                    style={styles.goIcon}
+                                    source={GoIcon}
+                                />
+                        </TouchableOpacity>
                     <TouchableOpacity style={styles.cancelInput} onPress={() => this.setState({ inputWindow: false })}>
-                            <Text style={styles.buttonText}>Discard</Text>
+                            <Text style={styles.buttonText}>Cancel</Text>
                     </TouchableOpacity>
                 </View>
                     
@@ -167,13 +189,25 @@ class Home extends Component
         this.showValue();
         this.props.navigation.setOptions({
             headerRight: () => (
-                    <TouchableOpacity onPress={() => this.setState({ inputWindow: true })} >
+                    <TouchableOpacity onPress={() => 
+                                                { 
+                                                    if(!this.state.deleteRequest) 
+                                                        this.setState({ inputWindow: true })
+                                                }} >
                         <Image
                             style={styles.plusIcon}
                             source={PlusIcon}
                         />
                     </TouchableOpacity>
                 ),
+            headerStyle: { 
+                            backgroundColor: '#D9CEC1', 
+                            height: DeviceInfo.hasNotch() ? 110 : 60 
+                        },
+            headerTitleStyle: 
+                            {
+                                paddingTop: DeviceInfo.hasNotch() ? 30 : 0 
+                            }
             });
     }
 
@@ -193,7 +227,7 @@ class Home extends Component
                                                     onLongPress={() => this.callConfirmationWindow(element)} >
                                     <View key={"view"+suffix} style={styles.habitView}>
                                         <Text key={"text"+suffix} style={styles.habitText}>
-                                            { habitTitle } { progressInPercent }%
+                                            { habitTitle }
                                         </Text>  
 
                                         <AnimatedCircularProgress
@@ -233,9 +267,12 @@ class Home extends Component
     {
         return (
             <View>
+                <ScrollView style={styles.scrollViewHome} contentContainerStyle={{flexGrow:1}} keyboardShouldPersistTaps="always">
                 <View style={ styles.fullWidth }> 
                     { this.renderHabits() }
                 </View>
+				</ScrollView>
+
             { this.state.inputWindow && this.showInputWindow() }
             { this.returnConfirmationWindow() }
             </View>
@@ -255,8 +292,9 @@ const styles = StyleSheet.create({
     },
     habitTouchableOp: {
         backgroundColor: "#E0D5C8",
-        height: 50,
         alignItems: "center",
+        minHeight: 50,
+        paddingVertical: 10,
         justifyContent: "center",
         marginBottom: 10,
         shadowColor: "#000",
@@ -278,7 +316,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#66493D",
         paddingLeft: "2%",
-        paddingRight: "2%",
+        paddingRight: "5%",
         width: "85%",
         textAlign: "center"
     },
@@ -308,16 +346,21 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     buttonText: {
-        color: "white"
+        color: "white",
+        fontWeight: 'bold',
+		fontFamily: "monospace", 
+		fontSize: 16
     },
     habitTitleDeleteRequest:
     {
         paddingLeft: "2%",
-        paddingRight: "2%"
+        paddingRight: "2%",
+        fontSize: 16
     },    
     habitTitleDeleteRequestWrapper: {
         borderRadius: 10,
-        height: "25%",
+        minHeight: "7%",
+        padding: 10,
         backgroundColor: "white",
         width: "100%",
         alignItems: "center",
@@ -330,10 +373,24 @@ const styles = StyleSheet.create({
         marginRight: 12,
         opacity: 0.5
     },
+    goIcon: {
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        right: -10,
+        transform: [{ rotate: '45deg' }]
+    },
+    goIconWrapper: {
+        width: "15%",
+        height: "25%",
+        position: "absolute",
+        marginTop: 5,
+        right: 0
+    },
     cancelInput: {
         backgroundColor: "#D99982",
         width: "50%",
-        height: "15%",
+        height: "20%",
         justifyContent: "center",
         alignItems: "center",
         marginTop: 5,
