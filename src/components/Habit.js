@@ -132,7 +132,7 @@ class Habit extends Component
         }
 	};
 
-    returnComponents = () => {
+    returnButton = () => {
         if(!this.state.hidden)
             return (
                 
@@ -161,16 +161,15 @@ class Habit extends Component
     componentDidMount() 
     {
         Animated.timing(
-            // Uses easing functions
-            this.state.fadeAnim, // The value to drive
+            this.state.fadeAnim,
             { 
                 toValue: 1,
                 duration: 1500,
                 useNativeDriver: true 
-            } // Configuration
+            }
             ).start();
 
-        this.returnComponents();
+        this.returnButton();
 
         this.handleButtonTime();
 
@@ -224,7 +223,8 @@ class Habit extends Component
         return ( 
             <View style={styles.border}>
                 <Bar key={this.state.counter} habitId={this.props.habitId}/>
-                { this.returnComponents() }
+                { this.returnButton() }
+                <Text style={styles.habitTitle}>{this.props.habitTitle}</Text>
                 { this.props.getCounter(this.state.counter) }
             </View>
         );
@@ -238,6 +238,14 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         marginRight: 5,
         borderRadius: 50
+    },
+    habitTitle: {
+        textAlign: "center",
+        marginTop: "10%",
+        fontWeight: 'normal',
+		fontFamily: "Roboto", 
+        fontSize: 16,
+        color: "#66737D"
     }
 });
 

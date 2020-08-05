@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React  from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
   StyleSheet,
@@ -11,6 +11,7 @@ import {
   Image
 } from 'react-native';
 
+import CheckBox from '@react-native-community/checkbox';
 
 import PlusIcon from '../icons/plus-circle-512.png';
 import GoIcon from '../icons/go.png';
@@ -18,8 +19,10 @@ import GoIcon from '../icons/go.png';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import DeviceInfo from "react-native-device-info";
 
+import timeConverter from "../helpers/timeConverter";
 
-class Home extends Component 
+
+class Home extends React.Component 
 {
     constructor(props)
     {
@@ -29,8 +32,11 @@ class Home extends Component
             deleteRequest: false,
             deleteRequestHabit: '',
             inputWindow: false,
-            inputText: ''
+            inputText: '',
+            inputCheckbox: false
         };
+
+        this.checkboxRef = React.createRef();
     }
 
     unsubscribe = this.props.navigation.addListener('focus', () => {
@@ -44,10 +50,22 @@ class Home extends Component
             var data = await AsyncStorage.multiGet(temp);
             
             
-            data.forEach(element =>
-                element[1] = JSON.parse(element[1]))
+            data.forEach(element => 
+                {
+                    element[1] = JSON.parse(element[1]);
+
+                    if(element[1].last_button_press && element[1].resettable)
+                    {
+                        var currentDate = new Date().getTime()
+                        if(currentDate - element[1].last_button_press > 86400000)
+                        {
+                            element[1].progress = 0;
+                        }
+                    }
+                })
             
             data.sort((a,b) => b[1].date - a[1].date)
+            
 
             this.setState({ habits: data });
                     
@@ -59,6 +77,7 @@ class Home extends Component
             console.log(e);
         }
     }
+
     confirmationWrapper = () => 
     {    
         return {
@@ -83,9 +102,10 @@ class Home extends Component
 
     toHabitScreen = (element) => {
         const habitId = element[0];
+        const habitTitle = element[1].text;
 
         const { navigation } = this.props;
-        navigation.navigate("Habit", { habitId });
+        navigation.navigate("Habit", { habitId, habitTitle });
     }
     
     callConfirmationWindow = (element) => 
@@ -175,6 +195,22 @@ class Home extends Component
                                     source={GoIcon}
                                 />
                         </TouchableOpacity>
+                        <View style={styles.checkboxView}>
+                            <CheckBox
+                                disabled={false}
+                                value={this.state.inputCheckbox}
+                                onValueChange={() => this.setState((state) => { return { inputCheckbox: !state.inputCheckbox }})}
+                                ref={this.checkboxRef}
+                            />
+                            <Text onPress=  {
+                                                () => 
+                                                { 
+                                                    this.setState((state) => { return { inputCheckbox: !state.inputCheckbox }})
+                                                }
+                                            }>
+                                Reset progress on missed day
+                            </Text>
+                        </View>
                     <TouchableOpacity style={styles.cancelInput} onPress={() => this.setState({ inputWindow: false })}>
                             <Text style={styles.buttonText}>Cancel</Text>
                     </TouchableOpacity>
@@ -220,27 +256,67 @@ class Home extends Component
                         suffix += 1;
                         var habitTitle = element[1].text;
                         var progressInPercent = Math.ceil(element[1].progress/21 * 100);
+                        var remainingTime = 0;
+                        var buttonAvailable = false;
+                        var currentDate = new Date().getTime();
+                        
+
+                        if(currentDate - element[1].last_button_press > 100000)
+                        {
+                            buttonAvailable = true;
+                        } else 
+                        {
+                            var timePassed = currentDate - element[1].last_button_press;
+                            //8 hours
+                            remainingTime = 28800000 - timePassed;
+                             
+                            console.log(timeConverter(remainingTime));
+                        }
+                        
                             return (
                                 <TouchableOpacity   style={ styles.habitTouchableOp } 
                                                     key={"touchable"+suffix} 
                                                     onPress = {() => this.toHabitScreen(element)} 
                                                     onLongPress={() => this.callConfirmationWindow(element)} >
+                                    { !buttonAvailable && this.returnRemainingTime(timeConverter(remainingTime))  }
                                     <View key={"view"+suffix} style={styles.habitView}>
                                         <Text key={"text"+suffix} style={styles.habitText}>
                                             { habitTitle }
                                         </Text>  
+                                        
 
                                         <AnimatedCircularProgress
-                                        size={20}
-                                        width={7}
-                                        fill={progressInPercent}
-                                        tintColor="#D99982"
-                                        backgroundColor="#FFF" />
+                                        size={ buttonAvailable ? 30 : 20 }
+                                        width={ buttonAvailable ? 9 : 7}
+                                        fill={ progressInPercent }
+                                        tintColor= { buttonAvailable ? "#FFF" : "#D9CEC1" } 
+                                        backgroundColor={ buttonAvailable ? "#595959" : "#969696" } />
+                                                        
                                     </View>
                                 </TouchableOpacity> 
                             ) 
                         })                 
         }
+    }
+
+    returnRemainingTime = (time) =>
+    {
+        return (
+            <Text style={styles.remainingTime}>{time}</Text>
+        );
+    }
+
+    checkAvailabillity = setInterval(() => 
+    { 
+        this.setState({});
+        this.showValue();
+        clearInterval(this);
+    }, 15000);
+
+
+    componentWillUnmount () 
+    {
+        clearInterval(this.checkAvailabillity); 
     }
 
     setItemtoAsyncStorage = async (text) => 
@@ -249,8 +325,11 @@ class Home extends Component
             text: text,
             progress: 0,
             date: Date.now(),
-            last_button_press: ''   
+            last_button_press: '' ,
+            resettable: this.state.inputCheckbox  
         }
+
+        this.setState({ inputCheckbox: false });
 
         const key = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
@@ -403,6 +482,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: "100%",
         height: "100%"
+    },
+    checkboxView: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        marginVertical: "2%"
+    },
+    remainingTime: {
+        fontSize: 8,
+        position: "absolute",
+        right: 0,
+        bottom: 0,
+        marginRight: "2%",
+        opacity: 0.5
     }
 });
 

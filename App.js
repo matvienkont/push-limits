@@ -7,7 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Button
+  Button,
+  Platform
 } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -15,20 +16,67 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HabitScreen from './src/Screens/HabitScreen';
 import HomeScreen from './src/Screens/HomeScreen';
 
+import PushNotification from "react-native-push-notification";
+
 const Stack = createStackNavigator();
 
 class App extends Component 
 {
 	constructor(props) {
-    super(props);
-        this.state = {
+	
+		super(props);
+		
+		PushNotification.configure({
+			onRegister: function (token) {
+			  console.log("TOKEN:", token);
+			},
+		  
+			onNotification: function (notification) {
+			  console.log("NOTIFICATION:", notification);		  
+		  
+			  notification.finish();
+			},
+		  
+			permissions: {
+			  alert: true,
+			  badge: true,
+			  sound: true,
+			},
+		  
+			popInitialNotification: true,
+			requestPermissions: Platform.OS === "ios",
+		});
+
+		this.state = 
+		{
             counter: 0,
-        }
+		}
     }
 
 	counter = 0;
 	getCounter = (childCounter) => {
 		this.counter = childCounter;
+	}
+
+	testPush = () => 
+	{
+		var nextTimeNotification = 72000000 + (72000000*Math.random());
+
+		PushNotification.localNotificationSchedule({
+			vibrate: true,
+			vibration: 100,
+			title: "Reminder",
+			message: "Don't forget to check available activities",
+			repeatType: "time",
+			repeatTime: nextTimeNotification,
+			date: new Date(Date.now() + nextTimeNotification),
+		  });
+	}
+
+	UNSAFE_componentWillMount () 
+	{
+		PushNotification.cancelAllLocalNotifications();
+		this.testPush();
 	}
 
 	render () {

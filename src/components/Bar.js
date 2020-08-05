@@ -41,6 +41,9 @@ class Bar extends Component
                 canvas.width  = screenWidth;
                 canvas.height = screenHeight;
 
+                /*ctx.fillStyle = "blue";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);*/
+
                 var i = 0;
                 for(i; i<21; i++)
                 {
@@ -95,7 +98,7 @@ class Bar extends Component
                         <View style={styles.canvasWrapper} >
                             <Canvas key={"habit"} ref={this.handleCanvas}/>
                         </View>
-                </View>;
+                </View>
         
         this.setState((state) => { return { spiral: returnedCanvas }});
         
@@ -116,8 +119,8 @@ class Bar extends Component
     
     data = () => 
     {
-    if(this.state.spiral)
-        return this.state.spiral;
+        if(this.state.spiral)
+            return this.state.spiral;
     }
  
     render() {
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
         width: "100%",
         flex: 1,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
     }
 });
 
