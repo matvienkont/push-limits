@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 import {
   StyleSheet,
@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Home from "../components/Home";
 
-class HomeScreen extends Component {
+class HomeScreen extends React.Component {
 	constructor(props)
 	{
 		super(props);

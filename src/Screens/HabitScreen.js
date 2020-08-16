@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 
 import {
@@ -10,7 +10,7 @@ import {
 
 import Habit from '../components/Habit';
 
-class HabitScreen extends Component {
+class HabitScreen extends React.Component {
 	constructor(props)
 	{
 		super(props);

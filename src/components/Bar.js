@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
     Dimensions,
     View, 
@@ -13,7 +13,7 @@ import Canvas from "react-native-canvas";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { dynamicSpiralParameters } from "../helpers/spiralParameters"
 
-class Bar extends Component 
+class Bar extends React.Component 
 {
     constructor(props) {
     super(props);

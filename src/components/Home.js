@@ -18,6 +18,7 @@ import GoIcon from '../icons/go.png';
 
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import DeviceInfo from "react-native-device-info";
+import { showMessage } from "react-native-flash-message";
 
 import timeConverter from "../helpers/timeConverter";
 
@@ -48,7 +49,7 @@ class Home extends React.Component
         try {
             var temp = await AsyncStorage.getAllKeys()
             var data = await AsyncStorage.multiGet(temp);
-            
+            var resetCounter = 0;
             
             data.forEach(element => 
                 {
@@ -57,21 +58,34 @@ class Home extends React.Component
                     if(element[1].last_button_press && element[1].resettable)
                     {
                         var currentDate = new Date().getTime()
-                        if(currentDate - element[1].last_button_press > 86400000)
+                        if(currentDate - element[1].last_button_press > 10000)
                         {
                             element[1].progress = 0;
+                            resetCounter += 1;
                         }
                     }
-                })
+                });
+            
+                
             
             data.sort((a,b) => b[1].date - a[1].date)
             
+            this.setState({ habits: data }, () => 
+                                            {
+                                                var message = "";
+                                                if (resetCounter == 1)
+                                                    message = "One of your habits was reset";
+                                                else 
+                                                    message = `${resetCounter} of your habits were reset`;
 
-            this.setState({ habits: data });
-                    
-            //await AsyncStorage.multiRemove(temp)
-            //console.log(data);
-            
+                                                if(resetCounter)
+                                                {
+                                                    showMessage({
+                                                        message: message,
+                                                        type: "default",
+                                                    });
+                                                }
+                                            });    
         } catch (e)
         {
             console.log(e);
@@ -208,7 +222,7 @@ class Home extends React.Component
                                                     this.setState((state) => { return { inputCheckbox: !state.inputCheckbox }})
                                                 }
                                             }>
-                                Reset progress on missed day
+                                    Reset progress on missed day
                             </Text>
                         </View>
                     <TouchableOpacity style={styles.cancelInput} onPress={() => this.setState({ inputWindow: false })}>
@@ -260,17 +274,18 @@ class Home extends React.Component
                         var buttonAvailable = false;
                         var currentDate = new Date().getTime();
                         
+                        //button available again in 8 hours
+                        const EIGHT_HOURS = 28800000;
 
-                        if(currentDate - element[1].last_button_press > 100000)
+                        if(currentDate - element[1].last_button_press > EIGHT_HOURS)
                         {
                             buttonAvailable = true;
                         } else 
                         {
                             var timePassed = currentDate - element[1].last_button_press;
-                            //8 hours
-                            remainingTime = 28800000 - timePassed;
-                             
-                            console.log(timeConverter(remainingTime));
+                            
+                            //variable that contains remaining time under Progress Circle in application
+                            remainingTime = EIGHT_HOURS - timePassed;                             
                         }
                         
                             return (
@@ -311,7 +326,7 @@ class Home extends React.Component
         this.setState({});
         this.showValue();
         clearInterval(this);
-    }, 15000);
+    }, 100000);
 
 
     componentWillUnmount () 

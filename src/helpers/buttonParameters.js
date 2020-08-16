@@ -1,5 +1,3 @@
-import { PixelRatio } from "react-native"
-
 export const dynamicButtonParameters = (screenWidth, screenHeight) => 
 {
 	var shiftFactorX = 30;

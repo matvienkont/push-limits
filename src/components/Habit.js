@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react';
+import React from 'react';
 import {
     Dimensions,
     View, 
@@ -14,7 +14,7 @@ import Bar from "./Bar";
 
 import { dynamicButtonParameters } from "../helpers/buttonParameters";
 
-class Habit extends Component 
+class Habit extends React.Component 
 {
     constructor(props) {
     super(props);
@@ -203,9 +203,12 @@ class Habit extends Component
         {
             var object = await AsyncStorage.getItem(this.props.habitId);
             object = JSON.parse(object);
+            
+            //button available again in 8 hours
+            const EIGHT_HOURS = 28800000;
 
             var currentDate = new Date().getTime()
-            if(currentDate - object.last_button_press > 10000)
+            if(currentDate - object.last_button_press > EIGHT_HOURS)
             {
                 this.setState({
                     button_disabled: false

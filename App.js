@@ -1,12 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 import {
   StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StatusBar,
   Button,
   Platform
 } from 'react-native';
@@ -17,10 +12,11 @@ import HabitScreen from './src/Screens/HabitScreen';
 import HomeScreen from './src/Screens/HomeScreen';
 
 import PushNotification from "react-native-push-notification";
+import FlashMessage from "react-native-flash-message";
 
 const Stack = createStackNavigator();
 
-class App extends Component 
+class App extends React.Component 
 {
 	constructor(props) {
 	
@@ -126,7 +122,8 @@ class App extends Component
 						{(props) => <HomeScreen {...props} />}
 					</Stack.Screen>
 				</Stack.Navigator>
-			</NavigationContainer>	
+			</NavigationContainer>
+			<FlashMessage position="top" />	
 			</>
 		);
 	}
