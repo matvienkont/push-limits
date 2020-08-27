@@ -1,3 +1,6 @@
+################################## BETA BRANCH ONLY ###################################
+
+
 # OSX
 #
 .DS_Store
@@ -52,6 +55,7 @@ android/gradle.properties
 android/gradlew
 android/gradlew.bat
 android/settings.gradle
+
 
 # node.js
 #
