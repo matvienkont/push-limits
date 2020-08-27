@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "Limits",
+=======
+  "name": "Habits",
+>>>>>>> 27549b0e043e9b1d4a94b18e3ac264104918f087
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -23,7 +27,10 @@
     "react-native-device-info": "^5.6.3",
     "react-native-flash-message": "^0.1.15",
     "react-native-gesture-handler": "^1.7.0",
+<<<<<<< HEAD
     "react-native-modalbox": "^2.0.0",
+=======
+>>>>>>> 27549b0e043e9b1d4a94b18e3ac264104918f087
     "react-native-push-notification": "^4.0.0",
     "react-native-responsive-screen": "^1.4.1",
     "react-native-safe-area-context": "^3.1.1",

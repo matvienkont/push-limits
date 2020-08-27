@@ -2,12 +2,9 @@ import React from 'react';
 import {
     Dimensions,
     View, 
-    StyleSheet,
     TouchableOpacity,
     Text,
     Animated,
-    Button,
-    Image
 } from "react-native"
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -155,7 +152,6 @@ class Habit extends React.Component
                 counter: tempCounter
             }});
         }
-
 	};
 
     returnButton = () => {

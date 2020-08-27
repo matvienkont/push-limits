@@ -25,7 +25,6 @@ import { showMessage } from "react-native-flash-message";
 import timeConverter from "../helpers/timeConverter";
 
 
-
 class Home extends React.Component 
 {
     constructor(props)
@@ -375,11 +374,6 @@ class Home extends React.Component
         } catch(e) {
             console.log(e);
         }
-    }
-
-    remainingTime = () =>
-    {
-
     }
 
     render () 
