@@ -49,7 +49,7 @@ class Home extends React.Component
     showValue = async () => 
     {
         try {
-            var temp = await AsyncStorage.getAllKeys()
+            var temp = await AsyncStorage.getAllKeys();
             var data = await AsyncStorage.multiGet(temp);
             var resetCounter = 0;
             
@@ -60,10 +60,15 @@ class Home extends React.Component
                     if(element[1].last_button_press && element[1].resettable)
                     {
                         var currentDate = new Date().getTime()
-                        if(currentDate - element[1].last_button_press > 10000)
+                        if(currentDate - element[1].last_button_press > 86400000)
                         {
                             element[1].progress = 0;
+                            element[1].stage = 1;
+                            element[1].last_button_press = '';
                             resetCounter += 1;
+    
+                            object = JSON.stringify(element[1]);
+                            AsyncStorage.setItem(element[0], object);
                         }
                     }
                 });
@@ -119,9 +124,10 @@ class Home extends React.Component
     toHabitScreen = (element) => {
         const habitId = element[0];
         const habitTitle = element[1].text;
+        const habitStage = element[1].stage;
 
         const { navigation } = this.props;
-        navigation.navigate("Habit", { habitId, habitTitle });
+        navigation.navigate("Habit", { habitId, habitTitle, habitStage });
     }
     
     callConfirmationWindow = (element) => 
@@ -263,6 +269,16 @@ class Home extends React.Component
             });
     }
 
+    stageStylingForHome = () => {  
+        return {
+                position: "absolute",
+                top: "45%",
+                left: "2.5%",
+                fontFamily: "serif",
+                fontSize: 16
+        }
+    }
+
     renderHabits = () => 
     {
         if(this.state.habits.length > 0) 
@@ -296,10 +312,12 @@ class Home extends React.Component
                                 <TouchableOpacity   style={ styles.habitTouchableOp } 
                                                     key={"touchable"+suffix} 
                                                     onPress = {() => this.toHabitScreen(element)} 
-                                                    onLongPress={() => this.callConfirmationWindow(element)} >
+                                                    onLongPress={() => this.callConfirmationWindow(element)}
+                                >
                                     { !buttonAvailable && this.returnRemainingTime(timeConverter(remainingTime))  }
-                                    <View key={"view"+suffix} style={styles.habitView}>
-                                        <Stage stage={currentStage}/>
+                                    <View 
+                                        key={"view"+suffix} style={styles.habitView}>
+                                        <Stage style={this.stageStylingForHome()} stage={currentStage}/>
                                         <Text key={"text"+suffix} style={styles.habitText}>
                                             { habitTitle }
                                         </Text>  
@@ -355,8 +373,8 @@ class Home extends React.Component
     {
         const value = {
             text: text,
-            progress: 19,
-            stage: 3,
+            progress: 0,
+            stage: 1,
             date: Date.now(),
             last_button_press: '' ,
             isActive: true,
@@ -407,7 +425,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#E0D5C8",
         alignItems: "center",
         minHeight: 50,
-        paddingVertical: 10,
         justifyContent: "center",
         marginBottom: 10,
         shadowColor: "#000",
@@ -428,7 +445,7 @@ const styles = StyleSheet.create({
         fontFamily: "normal",
         fontSize: 16,
         color: "#66493D",
-        paddingLeft: "2%",
+        paddingLeft: "6%",
         paddingRight: "5%",
         width: "85%",
         textAlign: "center"
@@ -515,7 +532,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: "100%",
-        height: "100%"
+        height: "100%",
+        paddingVertical: 10
     },
     checkboxView: {
         flexDirection: "row",
