@@ -14,8 +14,10 @@ import Bar from "./Bar";
 
 import { dynamicButtonParameters } from "../helpers/buttonParameters";
 import Modal from "react-native-modalbox";
-import power from "../icons/power.png";
 import { showMessage } from 'react-native-flash-message';
+
+import Stage from "./Stage";
+import LinearGradient from 'react-native-linear-gradient';
 
 class Habit extends React.Component 
 {
@@ -124,8 +126,8 @@ class Habit extends React.Component
             showMessage({
                 message: habitGained,
                 type: "success",
-                animationDuration: 1500,
-                duration: 2500
+                animationDuration: 1000,
+                duration: 2000
             });
 
             object.isActive = false;
@@ -244,7 +246,7 @@ class Habit extends React.Component
             object = JSON.parse(object);
             
             //button available again in 8 hours
-            const EIGHT_HOURS = 1000//28800000;
+            const EIGHT_HOURS = 28800000;
 
             var currentDate = new Date().getTime()
             if(currentDate - object.last_button_press > EIGHT_HOURS)
@@ -272,7 +274,6 @@ class Habit extends React.Component
     {
         if(!willProceed)
         {
-            console.log("NO PROCEED", willProceed);
             this.setState((state) => {  
                 return {
                     nextStageRequest: !state.nextStageRequest
@@ -280,7 +281,6 @@ class Habit extends React.Component
             });
         } else 
         {
-            console.log("PROCEED", willProceed);
             var object = await AsyncStorage.getItem(this.props.habitId);
             object = JSON.parse(object);
 
@@ -298,7 +298,19 @@ class Habit extends React.Component
                        }
                 }, () => { this.setState() });
         }
-            
+    }
+
+    stageStylingForHabitScreen = () => 
+    {
+        return {
+            fontFamily: "serif",
+            width: "100%",
+            textAlign: "center",
+            fontSize: 26,
+            fontWeight: "bold",
+            marginTop: "20%",
+            marginBottom: "7%"
+        }
     }
     
     render() {
@@ -336,6 +348,10 @@ class Habit extends React.Component
                     <Bar key={this.state.counter} habitId={this.props.habitId}/>
                     { this.returnButton() }
                     <Text style={styles.habitTitle}>{this.props.habitTitle}</Text>
+                    <View style={styles.stageWrapper}>
+                        <Stage style={this.stageStylingForHabitScreen()} stage={this.props.habitStage} />
+                        <LinearGradient style={styles.gradient} colors={['rgba(255, 255, 255, 0.25)', '#D9CEC1', '#D9CEC1']}></LinearGradient>
+                    </View>
                     { this.props.getCounter(this.state.counter) }
                 </View>
             </View>
@@ -357,7 +373,8 @@ const styles = StyleSheet.create({
         fontWeight: 'normal',
 		fontFamily: "Roboto", 
         fontSize: 16,
-        color: "#66737D"
+        color: "#66737D",
+        paddingHorizontal: "4%"
     },
     powerIcon: {
         width: "100%",
@@ -396,6 +413,7 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0,0,0,0)"
     },
     wrapperRigthAfterModal: {
+        marginTop: "5%",
         flex: 1,
         alignItems: "center"
     },
@@ -409,6 +427,9 @@ const styles = StyleSheet.create({
     toughWord: {
         color: "#420000",
         fontWeight: "bold"
+    },
+    gradient: {
+        height: "12%"
     }
 });
 

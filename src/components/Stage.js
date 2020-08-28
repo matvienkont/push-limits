@@ -1,7 +1,6 @@
 import React from "react";
 import  {    
             Text,
-            StyleSheet
         } from "react-native";
 
 import romanize from "../helpers/romanNumerals";
@@ -29,11 +28,9 @@ export default class Stage extends React.Component
                                         else if (this.currentStage == 5)
                                             color = "#9E8267"; 
 
+
     return {
-            position: "absolute",
-            top: "15%",
-            left: "2.5%",
-            fontFamily: "serif",
+            ...this.props.style,
             color: color
         }
     }
