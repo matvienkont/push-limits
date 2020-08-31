@@ -60,7 +60,9 @@ class Home extends React.Component
                     if(element[1].last_button_press && element[1].resettable)
                     {
                         var currentDate = new Date().getTime()
-                        if(currentDate - element[1].last_button_press > 86400000)
+                        const TWO_DAYS = 172800000; //48 hours
+
+                        if(currentDate - element[1].last_button_press > TWO_DAYS)
                         {
                             element[1].progress = 0;
                             element[1].stage = 1;
