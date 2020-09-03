@@ -96,3 +96,5 @@ babel.config.js
 ios              
 .buckconfig  
 .prettierrc.js
+android/java_pid12395.hprof
+android/java_pid4185.hprof

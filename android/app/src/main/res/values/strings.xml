@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Push Limits</string>
+    <color name="white">#FFF</color>
 </resources>
