@@ -70,7 +70,7 @@ class App extends React.Component
 
 	UNSAFE_componentWillMount () 
 	{
-		//PushNotification.cancelAllLocalNotifications();
+		PushNotification.cancelAllLocalNotifications();
 		this.testPush();
 	}
 
