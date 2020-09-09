@@ -240,16 +240,22 @@ class Habit extends React.Component
 
     handleButtonTime = async () => 
     {   
+        
         var object = await AsyncStorage.getItem(this.props.habitId);
         if ( this.state.counter < 21)
         {
             object = JSON.parse(object);
-            
-            //button available again in 8 hours
-            const EIGHT_HOURS = 28800000;
 
-            var currentDate = new Date().getTime()
-            if(currentDate - object.last_button_press > EIGHT_HOURS)
+            const currentDate = new Date().getTime();
+            const lastPress = object.last_button_press;
+
+            const lastPressDay = new Date(lastPress).getDay();
+            const currentTimeDay = new Date(currentDate).getDay();
+
+
+            const anotherDay = lastPressDay !== currentTimeDay ? true : false;
+            
+            if(anotherDay)
             {
                 this.setState({
                     button_disabled: false

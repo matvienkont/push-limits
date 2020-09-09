@@ -246,7 +246,7 @@ class Home extends React.Component
 
     componentDidMount()
     {
-        this.showValue();
+        this.showValue(); 
         this.props.navigation.setOptions({
             headerRight: () => (
                     <TouchableOpacity onPress={() => 
@@ -271,7 +271,8 @@ class Home extends React.Component
             });
     }
 
-    stageStylingForHome = () => {  
+    stageStylingForHome = () => 
+    {  
         return {
                 position: "absolute",
                 top: "45%",
@@ -286,7 +287,7 @@ class Home extends React.Component
         if(this.state.habits.length > 0) 
         {
             var suffix = -1; 
-            return this.state.habits.map( (element, index) => {
+            return this.state.habits.map((element, index) => {
                         suffix += 1;
                         var habitTitle = element[1].text;
                         var progressInPercent = Math.ceil(element[1].progress/21 * 100);
@@ -294,18 +295,24 @@ class Home extends React.Component
                         var buttonAvailable = false;
                         var currentDate = new Date().getTime();
                         var currentStage = element[1].stage;
-                        
-                        //button available again in 8 hours
-                        const EIGHT_HOURS = 28800000;
-                        if((currentDate - element[1].last_button_press > EIGHT_HOURS) && element[1].isActive)
+                        const lastPress = element[1].last_button_press;
+
+                        const lastPressDate = new Date(lastPress).getDate();
+                        const currentTimeDate = new Date(currentDate).getDate();
+
+                        const anotherDate = lastPressDate !== currentTimeDate ? true : false;
+
+                        if(anotherDate && element[1].isActive)
                         {
                             buttonAvailable = true;
                         } else if (element[1].isActive)
                         {
-                            var timePassed = currentDate - element[1].last_button_press;
+                            const formattedLastPress = new Date(lastPress);
+                            var nextDayIn = new Date(formattedLastPress.getFullYear(), formattedLastPress.getMonth(), formattedLastPress.getDate()+1, 0, 0, 0);
                             
+                            var remainingTime = nextDayIn.getTime() - currentDate;
                             //variable that contains remaining time under Progress Circle in application
-                            remainingTime = EIGHT_HOURS - timePassed;                             
+                            console.log(remainingTime);                          
                         } else {
                             buttonAvailable = false;
                         }
@@ -333,9 +340,22 @@ class Home extends React.Component
                                         backgroundColor={ buttonAvailable ? "#595959" : "#969696" } />
                                                         
                                     </View>
-                                </TouchableOpacity> 
+                                </TouchableOpacity>
                             ) 
                         })                 
+        }
+    }
+    
+    remainingTimeStyles = (margin, rightPosition) => 
+    {
+        margin = `${margin}%`;
+        return {
+            fontSize: 8,
+            position: "absolute",
+            right: margin,
+            bottom: 0,
+            marginRight: "1.5%",
+            opacity: 0.5
         }
     }
 
@@ -344,17 +364,35 @@ class Home extends React.Component
         //check if time is not empty
         if(time)
         {
-            if (time.includes("h"))
+            if(time.length === 2)
             {
                 return (
-                    <Text style={styles.remainingTimeWithHours}>{time}</Text>
-                );
+                    <Text style={this.remainingTimeStyles(3.3)}>{time}</Text>
+                ); 
+            } else if (time.length >= 6)
+            {
+                return (
+                    <Text style={this.remainingTimeStyles(1)}>{time}</Text>
+                ); 
             } else 
-            {
-                return (
-                    <Text style={styles.remainingTimeWithoutHours}>{time}</Text>
-                );
-            }
+                {
+                    if (time.includes("h"))
+                    {
+                        return (
+                            <Text style={this.remainingTimeStyles(1.6)}>{time}</Text>
+                        );
+                    } else if(time.includes("m")) 
+                    {
+                        return (
+                            <Text style={this.remainingTimeStyles(1.6)}>{time}</Text>
+                        );
+                    } else 
+                        {
+                            return (
+                                <Text style={this.remainingTimeStyles(2.7)}>{time}</Text>
+                            );
+                        }
+                }
         }
     }
 
@@ -542,22 +580,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginVertical: "2%"
-    },
-    remainingTimeWithHours: {
-        fontSize: 8,
-        position: "absolute",
-        right: "1%",
-        bottom: 0,
-        marginRight: "1.5%",
-        opacity: 0.5
-    },
-    remainingTimeWithoutHours: {
-        fontSize: 8,
-        position: "absolute",
-        right: "2%",
-        bottom: 0,
-        marginRight: "2%",
-        opacity: 0.5
     },
     stageStyle: {
         position: "absolute",
