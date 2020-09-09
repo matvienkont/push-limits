@@ -13,18 +13,25 @@ export default timeConverter = (duration ) =>
 
     if (!hours && !minutes)
     {
-        return time += " " + seconds + "s";
+        return time += seconds + "s";
     }
 
-    if(hours != 0)
+    if(hours)
     {
         time += hours + "h";
+        if(minutes)
+        {
+            time += " " + minutes + "m";
+        }
     } 
     
-    if (minutes != 0)
+    if (minutes && !hours && seconds)
     {
-        time += " " + minutes + "m";
-    }
+        time += minutes + "m" + " " + seconds + "s" ;
+    } else if (minutes && !seconds)
+            {
+                time += minutes + "m"
+            }
     
     return time;
 }
