@@ -57,7 +57,6 @@ class App extends React.Component
 	testPush = () => 
 	{
 		var nextTimeNotification = 36000000 + (14400000*Math.random());
-
 		PushNotification.localNotificationSchedule({
 			vibrate: true,
 			vibration: 100,

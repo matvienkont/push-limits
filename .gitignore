@@ -3,6 +3,8 @@ android
 
 # OSX
 #
+
+android
 .DS_Store
 
 # Xcode
@@ -17,7 +19,7 @@ build/
 *.perspectivev3
 !default.perspectivev3
 xcuserdata
-*.xccheckoutan
+*.xccheckout
 *.moved-aside
 DerivedData
 *.hmap
@@ -56,7 +58,6 @@ android/gradle.properties
 android/gradlew
 android/gradlew.bat
 android/settings.gradle
-
 
 # node.js
 #
@@ -100,3 +101,5 @@ babel.config.js
 ios              
 .buckconfig  
 .prettierrc.js
+android/java_pid12395.hprof
+android/java_pid4185.hprof
