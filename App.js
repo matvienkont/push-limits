@@ -56,7 +56,8 @@ class App extends React.Component
 
 	testPush = () => 
 	{
-		var nextTimeNotification = 36000000 + (14400000*Math.random());
+		var nextTimeNotification = Math.floor(36000000 + (14400000*((Math.random() * 2) - 1)));
+		console.log(nextTimeNotification);
 		PushNotification.localNotificationSchedule({
 			vibrate: true,
 			vibration: 100,
@@ -64,7 +65,7 @@ class App extends React.Component
 			message: "Don't forget to check available activities",
 			repeatType: "time",
 			repeatTime: nextTimeNotification,
-			date: new Date(Date.now() + nextTimeNotification),
+			date: new Date(Date.now() + nextTimeNotification)
 		  });
 	}
 
