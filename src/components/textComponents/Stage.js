@@ -3,7 +3,7 @@ import  {
             Text,
         } from "react-native";
 
-import romanize from "../helpers/romanNumerals";
+import romanize from "../../helpers/romanNumerals";
 
 export default class Stage extends React.Component 
 {

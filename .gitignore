@@ -1,10 +1,8 @@
-android
 .gitignore
 
 # OSX
 #
 
-android
 .DS_Store
 
 # Xcode
@@ -46,7 +44,7 @@ android/java_pid4784.hprof
 
 android/app/build
 android/app/limits.keystore
-android/app/build.gradle
+#android/app/build.gradle
 android/app/build_defs.bzl
 android/app/proguard-rules.pro
 android/app/debug.keystore

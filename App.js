@@ -1,15 +1,16 @@
-import React from 'react';
+import React from "react";
 
 import {
   StyleSheet,
-  Button,
-  Platform
-} from 'react-native';
+  Button
+} from "react-native";
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HabitScreen from './src/Screens/HabitScreen';
-import HomeScreen from './src/Screens/HomeScreen';
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import HabitScreen from "./src/Screens/HabitScreen";
+import HomeScreen from "./src/Screens/HomeScreen";
+import initialiseNotifications from "./src/helpers/notifications/initialiseNotifications";
+import scheduleNotifications from "./src/helpers/notifications/scheduleNotifications";
 
 import PushNotification from "react-native-push-notification";
 import FlashMessage from "react-native-flash-message";
@@ -22,26 +23,7 @@ class App extends React.Component
 	
 		super(props);
 		
-		PushNotification.configure({
-			onRegister: function (token) {
-			  console.log("TOKEN:", token);
-			},
-		  
-			onNotification: function (notification) {
-			  console.log("NOTIFICATION:", notification);		  
-		  
-			  notification.finish();
-			},
-		  
-			permissions: {
-			  alert: true,
-			  badge: true,
-			  sound: true,
-			},
-		  
-			popInitialNotification: true,
-			requestPermissions: Platform.OS === "ios",
-		});
+		initialiseNotifications();
 
 		this.state = 
 		{
@@ -54,25 +36,11 @@ class App extends React.Component
 		this.counter = childCounter;
 	}
 
-	testPush = () => 
-	{
-		var nextTimeNotification = Math.floor(36000000 + (14400000*((Math.random() * 2) - 1)));
-		console.log(nextTimeNotification);
-		PushNotification.localNotificationSchedule({
-			vibrate: true,
-			vibration: 100,
-			title: "Reminder",
-			message: "Don't forget to check available activities",
-			repeatType: "time",
-			repeatTime: nextTimeNotification,
-			date: new Date(Date.now() + nextTimeNotification)
-		  });
-	}
-
 	UNSAFE_componentWillMount () 
 	{
 		PushNotification.cancelAllLocalNotifications();
-		this.testPush();
+		
+		scheduleNotifications();
 	}
 
 	render () {

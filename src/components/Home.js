@@ -11,7 +11,7 @@ import {
   Image
 } from 'react-native';
 
-import Stage from "./Stage";
+import Stage from "./textComponents/Stage";
 
 import CheckBox from '@react-native-community/checkbox';
 

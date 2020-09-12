@@ -16,7 +16,7 @@ import { dynamicButtonParameters } from "../helpers/buttonParameters";
 import Modal from "react-native-modalbox";
 import { showMessage } from 'react-native-flash-message';
 
-import Stage from "./Stage";
+import Stage from "./textComponents/Stage";
 import LinearGradient from 'react-native-linear-gradient';
 
 class Habit extends React.Component 
