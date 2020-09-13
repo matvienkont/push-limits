@@ -9,6 +9,11 @@ const Stack = createStackNavigator();
 
 export default class Navigation extends React.Component
 {
+    constructor(props)
+    {
+        super(props);
+    }
+
     render ()
     { 
         return (
@@ -28,7 +33,7 @@ export default class Navigation extends React.Component
                                     fontSize: 20
                                 }
                                 }}>
-                        { (props) => <HabitScreen {...props} getCounter={this.getCounter.bind(this)} /> }
+                        { (props) => <HabitScreen {...props} getCounter={this.props.getCounter} /> }
                         </Stack.Screen> 
                         <Stack.Screen name="Home" options={{
                                 title: 'Home',

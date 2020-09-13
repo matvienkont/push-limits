@@ -312,7 +312,6 @@ class Home extends React.Component
                             
                             var remainingTime = nextDayIn.getTime() - currentDate;
                             //variable that contains remaining time under Progress Circle in application
-                            console.log(remainingTime);                          
                         } else {
                             buttonAvailable = false;
                         }
