@@ -6,12 +6,7 @@ import  {
 import romanize from "../../helpers/romanNumerals";
 
 export default class Stage extends React.Component 
-{
-    constructor (props)
-    {
-        super(props);
-    }
-    
+{   
     currentStage = this.props.stage;
 
     stageStyle = () => {

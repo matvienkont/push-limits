@@ -9,10 +9,6 @@ import {
 import Habit from '../components/Habit';
 
 class HabitScreen extends React.Component {
-	constructor(props)
-	{
-		super(props);
-	}
 
 	habitID=this.props.route.params.habitId;
 	habitTITLE=this.props.route.params.habitTitle;

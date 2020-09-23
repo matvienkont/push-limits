@@ -11,10 +11,6 @@ import {
 import Home from "../components/Home";
 
 class HomeScreen extends React.Component {
-	constructor(props)
-	{
-		super(props);
-	}
 
 	willFocus = this.props.navigation.addListener(
 		'willFocus',
@@ -22,10 +18,6 @@ class HomeScreen extends React.Component {
 		this.forceUpdate();
 		}
   	);
-
-	
-
-
 
   	render() {
 		  	return (
