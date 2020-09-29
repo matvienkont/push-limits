@@ -413,7 +413,7 @@ class Home extends React.Component
         const value = {
             text: text,
             progress: 20,
-            stage: 1,
+            stage: 5,
             date: Date.now(),
             last_button_press: '' ,
             isActive: true,

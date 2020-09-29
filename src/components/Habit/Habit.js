@@ -1,25 +1,25 @@
 import React from 'react';
 import {
-    Dimensions,
     View, 
-    TouchableOpacity,
     Text,
     Animated,
-    StyleSheet
-} from "react-native"
+    StyleSheet, 
+} from "react-native";
 
 import AsyncStorage from '@react-native-community/async-storage';
-import DeviceInfo from "react-native-device-info";
 import Bar from "./sub-components/Bar";
-
-import Modal from "react-native-modalbox";
-import { showMessage } from 'react-native-flash-message';
 
 import Stage from "../textComponents/Stage";
 import LinearGradient from 'react-native-linear-gradient';
 
 import check_another_day from "../../helpers/time_processing/check_another_day";
 import CentralButton from "./sub-components/CentralButton";
+import { StatusBar } from "react-native";
+import { optionsToNavigationBar } from "../navigation/helpers/optionsToNavigationBar";
+import { stageStyling } from "./styling/stageStyling";
+import ModalBox from "./sub-components/ModalBox";
+import { triggetFlashMessage } from "./helpers/triggerFlashMessage";
+
 
 class Habit extends React.Component 
 {
@@ -34,6 +34,7 @@ class Habit extends React.Component
             fadeAnim: new Animated.Value(0)
         }
         this.opacityRef = React.createRef();
+        this.callRequest = React.createRef();
     }
 
     counterFunc = async () => {
@@ -42,23 +43,14 @@ class Habit extends React.Component
 
         if(object.stage == 5 && object.progress == 20)//last click while ending fifth stage
         {
-            const habitGained = `   My genuine congratulations !
-   Willpower is with you.`
-
-            showMessage({
-                message: habitGained,
-                type: "success",
-                animationDuration: 1000,
-                duration: 2000
-            });
-
+            triggetFlashMessage();
             object.isActive = false;
 
         } else if ( object.progress == 20) //next stage initialisation
         {
             this.setState({
                 nextStageRequest: true
-            }, () => this.refs.requestModal.open());
+            }, () => this.callRequest.current.triggerModal());
         }
         
         if( object.progress < 21)
@@ -100,7 +92,10 @@ class Habit extends React.Component
         {
             this.setState({ 
                 nextStageRequest: true
-            }, () => this.refs.requestModal.open());
+            }, () => this.callRequest.current.triggerModal());
+        } else if (object.progress == 21 && object.stage == 5)
+        {
+            triggetFlashMessage();
         }
     }
 
@@ -121,16 +116,7 @@ class Habit extends React.Component
 
         this.repeatNextStageRequestOnMount();
 
-        this.props.navigation.setOptions({
-            headerStyle: { 
-                            backgroundColor: '#D9CEC1', 
-                            height: DeviceInfo.hasNotch() ? 110 : 60 
-                        },
-            headerTitleStyle: 
-                            {
-                                paddingTop: DeviceInfo.hasNotch() ? 30 : 0 
-                            }
-            });
+        this.props.navigation.setOptions(optionsToNavigationBar);
         
     }
 
@@ -197,7 +183,6 @@ class Habit extends React.Component
             object.progress = 0;
             object.stage += 1;
 
-            
             object = JSON.stringify(object);
             await AsyncStorage.setItem(this.props.habitId, object);
 
@@ -209,57 +194,21 @@ class Habit extends React.Component
                 }, () => { this.setState() });
         }
     }
-
-    stageStylingForHabitScreen = () => 
-    {
-        return {
-            fontFamily: "serif",
-            width: "100%",
-            textAlign: "center",
-            fontSize: 26,
-            fontWeight: "bold",
-            marginTop: "20%",
-            marginBottom: "7%"
-        }
-    }
     
     render() {
         return ( 
             <View style={{width: "100%", height: "100%"}}>
-                <Modal
-                    style={styles.modalWrapper}
-                    deviceWidth={Dimensions.get("window").width}
-                    deviceHeight={Dimensions.get("window").height}
-                    backdrop={false}
-                    ref={"requestModal"} 
-                    isOpen={this.state.nextStageRequest}>
-                    <View style={styles.wrapperRigthAfterModal}>
-                        <View style={styles.containerView}>
-                            <Text style={styles.completeMessage}>Wow! You completed the stage of your new habit ! 
-                            Do you want to make the habit really <Text style={styles.toughWord}>tough</Text> to break ?</Text>
-                                <View style={styles.opacityWrapper}>
-                                    <TouchableOpacity
-                                        style={[styles.opacities, styles.yesOpacity]}
-                                        onPress={() => this.handleNextStageQuery(true)} 
-                                    >
-                                            <Text style={styles.options}>YES</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[styles.opacities, styles.noOpacity]}
-                                        onPress={() => this.handleNextStageQuery(false)}
-                                        >
-                                        <Text style={styles.options}>NO</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                </View>
-                        </View>
-                </Modal>
+                <StatusBar backgroundColor='#877F7D' barStyle='light-content' />
+            
+                <ModalBox nextStageRequest={this.state.nextStageRequest} ref={this.callRequest} handleNextStageQuery={this.handleNextStageQuery.bind()}/>
+                
+
             <View style={styles.border}>
                     <Bar key={this.state.counter} habitId={this.props.habitId}/>
                     { this.returnButton() }
                     <Text style={styles.habitTitle}>{this.props.habitTitle}</Text>
                     <View style={styles.stageWrapper}>
-                        <Stage style={this.stageStylingForHabitScreen()} stage={this.props.habitStage} />
+                        <Stage style={stageStyling} stage={this.props.habitStage} />
                         <LinearGradient style={styles.gradient} colors={['rgba(255, 255, 255, 0.25)', '#D9CEC1', '#D9CEC1']}></LinearGradient>
                     </View>
                     { this.props.getCounter(this.state.counter) }
@@ -290,80 +239,7 @@ const styles = StyleSheet.create({
         width: "100%",
         height: "100%",
         display: "none"
-    },
-    completeMessage: {
-        marginBottom: "5%",
-        textAlign: "center",
-        fontSize: 15
-    },
-    options: {
-        fontSize: 16    
-    },
-    opacities: {
-        borderWidth: 1,
-        width: "35%",
-        alignItems: "center",
-        marginHorizontal: "4%",
-        paddingVertical: "1.5%",
-        borderRadius: 2
-    },
-    yesOpacity: {
-        backgroundColor: "rgba(0, 232, 15, 0.02)"
-    },
-    noOpacity: {
-        backgroundColor: "rgba(217, 57, 22, 0.02)"
-    },
-    opacityWrapper: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    modalWrapper: {
-        backgroundColor: "rgba(0,0,0,0)"
-    },
-    wrapperRigthAfterModal: {
-        marginTop: "5%",
-        flex: 1,
-        alignItems: "center"
-    },
-    containerView: {
-        width: "80%", 
-        padding: "5%",
-        marginTop: "5%",
-        borderRadius: 5,
-        backgroundColor: "#C2B8AC"
-    },
-    toughWord: {
-        color: "#420000",
-        fontWeight: "bold"
-    },
-    gradient: {
-        height: "12%"
     }
 });
 
 export default Habit;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
