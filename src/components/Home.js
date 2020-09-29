@@ -22,7 +22,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import DeviceInfo from "react-native-device-info";
 import { showMessage } from "react-native-flash-message";
 
-import timeConverter from "../helpers/timeConverter";
+import timeConverter from "../helpers/time_processing/timeConverter";
 
 
 class Home extends React.Component 
@@ -412,7 +412,7 @@ class Home extends React.Component
     {
         const value = {
             text: text,
-            progress: 0,
+            progress: 20,
             stage: 1,
             date: Date.now(),
             last_button_press: '' ,

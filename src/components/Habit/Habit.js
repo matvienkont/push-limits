@@ -10,14 +10,16 @@ import {
 
 import AsyncStorage from '@react-native-community/async-storage';
 import DeviceInfo from "react-native-device-info";
-import Bar from "./Bar";
+import Bar from "./sub-components/Bar";
 
-import { dynamicButtonParameters } from "../helpers/buttonParameters";
 import Modal from "react-native-modalbox";
 import { showMessage } from 'react-native-flash-message';
 
-import Stage from "./textComponents/Stage";
+import Stage from "../textComponents/Stage";
 import LinearGradient from 'react-native-linear-gradient';
+
+import check_another_day from "../../helpers/time_processing/check_another_day";
+import CentralButton from "./sub-components/CentralButton";
 
 class Habit extends React.Component 
 {
@@ -32,86 +34,6 @@ class Habit extends React.Component
             fadeAnim: new Animated.Value(0)
         }
         this.opacityRef = React.createRef();
-    }
-
-    styleObjectForButton = () => {
-        
-        const screenWidth = Dimensions.get('window').width;
-        const screenHeight = Dimensions.get('window').height;
-
-        const center = dynamicButtonParameters(screenWidth, screenHeight);
-
-        var colour = this.state.button_disabled ? "rgba(217, 196, 171, 0.4)" : "rgba(217, 196, 171, 1)";
-        
-        if(this.state.button_disabled) 
-        {
-            return {
-                left: center.x_loc,
-                top: center.y_loc,
-                height: 120,
-                width: 120,
-                borderRadius: 60,
-                backgroundColor: colour,
-                justifyContent: 'center',
-                position: "absolute",
-            }
-        } else {
-            return {
-                left: center.x_loc,
-                top: center.y_loc,
-                height: 120,
-                width: 120,
-                borderRadius: 60,
-                backgroundColor: colour,
-                justifyContent: 'center',
-                position: "absolute",
-                shadowColor: "#000",
-                shadowOffset: {
-                    width: 0,
-                    height: 1,
-                },
-                shadowOpacity: 0.18,
-                shadowRadius: 1.00,
-
-                elevation: 1,
-            }
-        }
-    }
-
-    styleObjectForButtonWrapper = () => {
-        
-        const screenWidth = Dimensions.get('window').width;
-        const screenHeight = Dimensions.get('window').height;
-
-        const center = dynamicButtonParameters(screenWidth, screenHeight);
-
-            return {
-                left: center.x_loc,
-                top: center.y_loc,
-                height: 120,
-                width: 120,
-                borderRadius: 60,
-                backgroundColor: "rgb(0, 0, 0)",
-                opacity: 0,
-                justifyContent: 'center',
-                position: "absolute",
-            }
-    }
-
-    textStyleForButton = () =>
-    {
-        var textColour = this.state.button_disabled ? "rgba(0, 0, 0, 0.4)" : "rgba(0, 0, 0, 1)";
-
-        return {
-            alignSelf: 'center',
-            color: textColour,
-            fontFamily: "monospace",
-            fontSize: 15,
-            fontWeight: '900',
-            paddingTop: 10,
-            paddingBottom: 10,
-        }
-
     }
 
     counterFunc = async () => {
@@ -134,7 +56,7 @@ class Habit extends React.Component
 
         } else if ( object.progress == 20) //next stage initialisation
         {
-            this.setState({ 
+            this.setState({
                 nextStageRequest: true
             }, () => this.refs.requestModal.open());
         }
@@ -159,28 +81,14 @@ class Habit extends React.Component
 
     returnButton = () => {
         if(!this.state.hidden)
-            return (
-                
-                    <>      
-                    <Animated.View
-                        style= {
-                                {
-                                    opacity: this.state.fadeAnim // Bind opacity to animated value
-                                }}>
-                        <View
-                                style={this.styleObjectForButton()}>
-                            <Text style={this.textStyleForButton()}>Nailed it</Text>
-                        </View>
-                    </Animated.View>
-                    <TouchableOpacity 
-                        style={ this.styleObjectForButtonWrapper() }
-                        onPress={ this.counterFunc }
-                        disabled={this.state.button_disabled} 
-                        ref={this.opacityRef} 
-                        activeOpacity={0.03}>
-                    </TouchableOpacity>
-                    </>
-                );      
+        {
+            return (<CentralButton 
+                counterFunc={this.counterFunc.bind(this)} 
+                button_disabled={this.state.button_disabled} 
+                fadeAnim={this.state.fadeAnim}
+                opacityRef={this.opacityRef}
+            />)
+        }
     }
 
     repeatNextStageRequestOnMount = async () =>
@@ -240,21 +148,13 @@ class Habit extends React.Component
 
     handleButtonTime = async () => 
     {   
-        
         var object = await AsyncStorage.getItem(this.props.habitId);
         if ( this.state.counter < 21)
         {
             object = JSON.parse(object);
-
-            const currentDate = new Date().getTime();
-            const lastPress = object.last_button_press;
-
-            const lastPressDay = new Date(lastPress).getDay();
-            const currentTimeDay = new Date(currentDate).getDay();
-
-
-            const anotherDay = lastPressDay !== currentTimeDay ? true : false;
             
+            var anotherDay = check_another_day(object);
+
             if(anotherDay)
             {
                 this.setState({
@@ -267,7 +167,11 @@ class Habit extends React.Component
                 });
             }
         }
-        
+        //temp
+        this.setState({
+                button_disabled: false
+            });
+        //
         if ( object.progress == 21 )
         {
             this.setState({

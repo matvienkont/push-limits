@@ -1,5 +1,7 @@
-import { dynamicSpiralParameters } from "../../helpers/spiralParameters";
-import { Dimensions } from "react-native";
+import { dynamicSpiralParameters } from "../../../helpers/spiralParameters";
+import { Dimensions,
+         View,
+         StyleSheet } from "react-native";
 import React from "react";
 import Canvas from "react-native-canvas";
 
@@ -34,7 +36,7 @@ export default class CanvasSpiral extends React.Component
         this.spiralParams.y_loc = this.spiralParams.y_loc + this.spiralParams.radius * Math.sin(this.spiralParams.angle);
         this.i++;
 
-        if(this.i > 21)
+        if(this.i >= 21)
         {
             cancelAnimationFrame();
         } else 
@@ -62,10 +64,39 @@ export default class CanvasSpiral extends React.Component
         
     };
 
+    borderMargin = () => 
+    {
+        return { 
+            position: "absolute",
+            backgroundColor: "rgba(52, 52, 52, 0)",
+            width: "100%"
+        }
+    };
+
     render ()
     {
         return (
-            <Canvas key={"habit"} ref={this.handleCanvas}/>
+                <View style={this.borderMargin()}>
+                        <View style={styles.canvasWrapper} >
+                            <Canvas key={"habit"} ref={this.handleCanvas}/>
+                        </View>
+                </View>
+            
         );
     }
-}
+};
+
+const styles = StyleSheet.create({
+	border: {
+        marginLeft: 60,
+        position: "absolute",
+		backgroundColor: "rgba(52, 52, 52, 0)",
+		borderWidth: 5,
+	},
+    canvasWrapper: {
+        width: "100%",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    }
+});

@@ -6,7 +6,7 @@ import {
   View,
 } from 'react-native';
 
-import Habit from '../components/Habit';
+import Habit from '../components/Habit/Habit';
 
 class HabitScreen extends React.Component {
 
