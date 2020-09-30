@@ -6,23 +6,27 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Dimensions,
   ScrollView,
   Image
 } from 'react-native';
 
-import Stage from "./textComponents/Stage";
+
 
 import CheckBox from '@react-native-community/checkbox';
 
-import PlusIcon from '../icons/plus-circle-512.png';
-import GoIcon from '../icons/go.png';
+import PlusIcon from '../../icons/plus-circle-512.png';
+import GoIcon from '../../icons/go.png';
 
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
+
 import DeviceInfo from "react-native-device-info";
-import { showMessage } from "react-native-flash-message";
 
-import timeConverter from "../helpers/time_processing/timeConverter";
+
+import { getArrayOfLists } from './helpers/habitList/getArrayOfLists';
+import { confirmationWrapper } from "./styling/confirmationWrapper";
+import { resetNotification } from './helpers/habitList/resetNotification';
+
+import { renderHabits } from "./sub-components/renderHabits/renderHabits";
+
 
 
 class Home extends React.Component 
@@ -48,80 +52,20 @@ class Home extends React.Component
 
     showValue = async () => 
     {
-        try {
-            var temp = await AsyncStorage.getAllKeys();
-            var data = await AsyncStorage.multiGet(temp);
-            var resetCounter = 0;
-            
-            data.forEach(element => 
-                {
-                    element[1] = JSON.parse(element[1]);
+        try { 
+            var getList = getArrayOfLists();
 
-                    if(element[1].last_button_press && element[1].resettable)
-                    {
-                        var currentDate = new Date().getTime()
-                        const timeToReset = 88200000; //24.5 hours
+            var data = (await getList).data;
+            var resetCounter = (await getList).resetCounter;
 
-                        if(currentDate - element[1].last_button_press > timeToReset)
-                        {
-                            element[1].progress = 0;
-                            element[1].stage = 1;
-                            element[1].last_button_press = '';
-                            resetCounter += 1;
-    
-                            object = JSON.stringify(element[1]);
-                            AsyncStorage.setItem(element[0], object);
-                        }
-                    }
-                });
-            
-                
-            
-            data.sort((a,b) => b[1].date - a[1].date)
-            
-            this.setState({ habits: data }, () => 
-                                            {
-                                                var message = "";
-                                                if (resetCounter == 1)
-                                                    message = "One of your habits was reset";
-                                                else 
-                                                    message = `${resetCounter} of your habits were reset`;
-
-                                                if(resetCounter)
-                                                {
-                                                    showMessage({
-                                                        message: message,
-                                                        type: "default",
-                                                    });
-                                                }
-                                            });    
+            this.setState({ habits: data }, () => resetNotification(resetCounter));
         } catch (e)
         {
             console.log(e);
         }
     }
 
-    confirmationWrapper = () => 
-    {    
-        return {
-            position: "absolute",
-            backgroundColor: "rgba(217, 206, 193, 0.9)",
-            height: Dimensions.get("screen").height,
-            left: 0,
-            right: 0,
-            shadowColor: "rgba(217, 196, 171, 0.3)",
-            shadowOffset: {
-                width: 0,
-                height: 1,
-            },
-            shadowOpacity: 0.18,
-            shadowRadius: 1.00,
-
-
-            elevation: 8,
-            alignItems: 'center'
-        }
-    }
+    
 
     toHabitScreen = (element) => {
         const habitId = element[0];
@@ -161,7 +105,7 @@ class Home extends React.Component
         {
         let habitTitle = this.state.deleteRequestHabit[1].text;
             return (
-                <View style={this.confirmationWrapper()} >
+                <View style={confirmationWrapper()} >
                     <View style={styles.styleConfirmationWindow} >
                         <View style={styles.habitTitleDeleteRequestWrapper} >
                             <Text style={ styles.habitTitleDeleteRequest }>{habitTitle}</Text>
@@ -198,7 +142,7 @@ class Home extends React.Component
     showInputWindow = () => 
     {
         return (
-            <View scrollEnabled={false} style={this.confirmationWrapper()}>
+            <View scrollEnabled={false} style={confirmationWrapper()}>
                 <View scrollEnabled={false} style={styles.styleConfirmationWindow} >
                     <TextInput 
                                 autoFocus
@@ -271,129 +215,20 @@ class Home extends React.Component
             });
     }
 
-    stageStylingForHome = () => 
-    {  
-        return {
-                position: "absolute",
-                top: "45%",
-                left: "2.5%",
-                fontFamily: "serif",
-                fontSize: 16
-        }
-    }
+    
 
     renderHabits = () => 
     {
         if(this.state.habits.length > 0) 
         {
-            var suffix = -1; 
-            return this.state.habits.map((element, index) => {
-                        suffix += 1;
-                        var habitTitle = element[1].text;
-                        var progressInPercent = Math.ceil(element[1].progress/21 * 100);
-                        var remainingTime = 0;
-                        var buttonAvailable = false;
-                        var currentDate = new Date().getTime();
-                        var currentStage = element[1].stage;
-                        const lastPress = element[1].last_button_press;
-
-                        const lastPressDate = new Date(lastPress).getDate();
-                        const currentTimeDate = new Date(currentDate).getDate();
-
-                        const anotherDate = lastPressDate !== currentTimeDate ? true : false;
-
-                        if(anotherDate && element[1].isActive)
-                        {
-                            buttonAvailable = true;
-                        } else if (element[1].isActive)
-                        {
-                            const formattedLastPress = new Date(lastPress);
-                            var nextDayIn = new Date(formattedLastPress.getFullYear(), formattedLastPress.getMonth(), formattedLastPress.getDate()+1, 0, 0, 0);
-                            
-                            var remainingTime = nextDayIn.getTime() - currentDate;
-                            //variable that contains remaining time under Progress Circle in application
-                        } else {
-                            buttonAvailable = false;
-                        }
-                        
-                            return (
-                                <TouchableOpacity   style={ styles.habitTouchableOp } 
-                                                    key={"touchable"+suffix} 
-                                                    onPress = {() => this.toHabitScreen(element)} 
-                                                    onLongPress={() => this.callConfirmationWindow(element)}
-                                >
-                                    { !buttonAvailable && this.returnRemainingTime(timeConverter(remainingTime))  }
-                                    <View 
-                                        key={"view"+suffix} style={styles.habitView}>
-                                        <Stage style={this.stageStylingForHome()} stage={currentStage}/>
-                                        <Text key={"text"+suffix} style={styles.habitText}>
-                                            { habitTitle }
-                                        </Text>  
-                                        
-
-                                        <AnimatedCircularProgress
-                                        size={ buttonAvailable ? 30 : 20 }
-                                        width={ buttonAvailable ? 9 : 7}
-                                        fill={ progressInPercent }
-                                        tintColor= { buttonAvailable ? "#FFF" : "#D9CEC1" } 
-                                        backgroundColor={ buttonAvailable ? "#595959" : "#969696" } />
-                                                        
-                                    </View>
-                                </TouchableOpacity>
-                            ) 
-                        })                 
+            console.log(this.state.habits);
+            return renderHabits(this.state.habits, this.toHabitScreen.bind(this), this.callConfirmationWindow.bind(this));
+            //this.setState((state) => {habits: renderHabits(state.habits)}, () => console.log(this.state.habits));                 
         }
+        
     }
     
-    remainingTimeStyles = (margin, rightPosition) => 
-    {
-        margin = `${margin}%`;
-        return {
-            fontSize: 8,
-            position: "absolute",
-            right: margin,
-            bottom: 0,
-            marginRight: "1.5%",
-            opacity: 0.5
-        }
-    }
-
-    returnRemainingTime = (time) =>
-    { 
-        //check if time is not empty
-        if(time)
-        {
-            if(time.length === 2)
-            {
-                return (
-                    <Text style={this.remainingTimeStyles(3.3)}>{time}</Text>
-                ); 
-            } else if (time.length >= 6)
-            {
-                return (
-                    <Text style={this.remainingTimeStyles(1)}>{time}</Text>
-                ); 
-            } else 
-                {
-                    if (time.includes("h"))
-                    {
-                        return (
-                            <Text style={this.remainingTimeStyles(1.6)}>{time}</Text>
-                        );
-                    } else if(time.includes("m")) 
-                    {
-                        return (
-                            <Text style={this.remainingTimeStyles(1.6)}>{time}</Text>
-                        );
-                    } else 
-                        {
-                            return (
-                                <Text style={this.remainingTimeStyles(2.7)}>{time}</Text>
-                            );
-                        }
-                }
-        }
-    }
+ 
 
     checkAvailabillity = setInterval(() => 
     { 
@@ -403,7 +238,7 @@ class Home extends React.Component
     }, 100000);
 
 
-    componentWillUnmount () 
+    componentWillUnmount ()
     {
         clearInterval(this.checkAvailabillity); 
     }
@@ -480,15 +315,6 @@ const styles = StyleSheet.create({
         width: "100%",
         marginTop: "3%"
     },
-    habitText: {
-        fontFamily: "normal",
-        fontSize: 16,
-        color: "#66493D",
-        paddingLeft: "6%",
-        paddingRight: "5%",
-        width: "85%",
-        textAlign: "center"
-    },
     styleConfirmationWindow: {
         marginTop: "10%",
         height: "25%",
@@ -564,15 +390,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 5,
         borderRadius: 10
-    },
-    habitView: {
-        flex: 1,
-        flexDirection: "row",
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: "100%",
-        height: "100%",
-        paddingVertical: 10
     },
     checkboxView: {
         flexDirection: "row",

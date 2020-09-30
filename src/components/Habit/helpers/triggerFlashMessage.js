@@ -1,6 +1,6 @@
 import { showMessage } from 'react-native-flash-message';
 
-export const triggetFlashMessage = () => 
+export const triggerFlashMessage = () => 
 {
     const habitGained = `My genuine congratulations !
     Willpower is with you.`

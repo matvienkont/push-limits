@@ -18,7 +18,8 @@ import { StatusBar } from "react-native";
 import { optionsToNavigationBar } from "../navigation/helpers/optionsToNavigationBar";
 import { stageStyling } from "./styling/stageStyling";
 import ModalBox from "./sub-components/ModalBox";
-import { triggetFlashMessage } from "./helpers/triggerFlashMessage";
+import { triggerFlashMessage } from "./helpers/triggerFlashMessage";
+import { fadeAnimationButton } from "./helpers/fadeAnimationButton";
 
 
 class Habit extends React.Component 
@@ -43,7 +44,7 @@ class Habit extends React.Component
 
         if(object.stage == 5 && object.progress == 20)//last click while ending fifth stage
         {
-            triggetFlashMessage();
+            triggerFlashMessage();
             object.isActive = false;
 
         } else if ( object.progress == 20) //next stage initialisation
@@ -95,20 +96,13 @@ class Habit extends React.Component
             }, () => this.callRequest.current.triggerModal());
         } else if (object.progress == 21 && object.stage == 5)
         {
-            triggetFlashMessage();
+            triggerFlashMessage();
         }
     }
 
     componentDidMount() 
     {
-        Animated.timing(
-            this.state.fadeAnim,
-            { 
-                toValue: 1,
-                duration: 1500,
-                useNativeDriver: true 
-            }
-            ).start();
+        fadeAnimationButton(Animated, this.state.fadeAnim);
 
         this.returnButton();
 

@@ -8,7 +8,7 @@ import {
   Dimensions,
   ScrollView
 } from 'react-native';
-import Home from "../components/Home";
+import Home from "../components/Home/Home";
 
 class HomeScreen extends React.Component {
 
