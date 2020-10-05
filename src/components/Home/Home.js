@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
   StyleSheet,
@@ -22,7 +22,7 @@ import DeviceInfo from "react-native-device-info";
 
 
 import { getArrayOfLists } from './helpers/habitList/getArrayOfLists';
-import { confirmationWrapper } from "./styling/confirmationWrapper";
+import { confirmationWrapper } from "./styling/styles";
 import { resetNotification } from './helpers/habitList/resetNotification';
 
 import { renderHabits } from "./sub-components/renderHabits/renderHabits";
@@ -168,7 +168,6 @@ class Home extends React.Component
                                 disabled={false}
                                 value={this.state.inputCheckbox}
                                 onValueChange={() => this.setState((state) => { return { inputCheckbox: !state.inputCheckbox }})}
-                                ref={this.checkboxRef}
                             />
                             <Text onPress=  {
                                                 () => 
@@ -221,11 +220,8 @@ class Home extends React.Component
     {
         if(this.state.habits.length > 0) 
         {
-            console.log(this.state.habits);
             return renderHabits(this.state.habits, this.toHabitScreen.bind(this), this.callConfirmationWindow.bind(this));
-            //this.setState((state) => {habits: renderHabits(state.habits)}, () => console.log(this.state.habits));                 
         }
-        
     }
     
  
@@ -247,7 +243,7 @@ class Home extends React.Component
     {
         const value = {
             text: text,
-            progress: 20,
+            progress: 19,
             stage: 5,
             date: Date.now(),
             last_button_press: '' ,
@@ -284,8 +280,6 @@ class Home extends React.Component
         );
     }
 }
-
-
 
 const styles = StyleSheet.create({
     habitInput: {
