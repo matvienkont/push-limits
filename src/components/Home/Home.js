@@ -4,18 +4,13 @@ import {
   StyleSheet,
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   Image
 } from 'react-native';
 
-
-
-import CheckBox from '@react-native-community/checkbox';
-
 import PlusIcon from '../../icons/plus-circle-512.png';
-import GoIcon from '../../icons/go.png';
+
 
 
 import DeviceInfo from "react-native-device-info";
@@ -26,8 +21,7 @@ import { confirmationWrapper } from "./styling/styles";
 import { resetNotification } from './helpers/habitList/resetNotification';
 
 import { renderHabits } from "./sub-components/renderHabits/renderHabits";
-
-
+import EditHabit from './sub-components/habitsEditing/EditHabit';
 
 class Home extends React.Component 
 {
@@ -39,7 +33,6 @@ class Home extends React.Component
             deleteRequest: false,
             deleteRequestHabit: '',
             inputWindow: false,
-            inputText: '',
             inputCheckbox: false
         };
 
@@ -132,60 +125,36 @@ class Home extends React.Component
                 if(result)
                     this.setItemtoAsyncStorage(text);
             }
-        
-        
-        this.textInput.clear(); 
-        
+                
         this.setState({ inputWindow: false })
     }
 
     showInputWindow = () => 
     {
         return (
-            <View scrollEnabled={false} style={confirmationWrapper()}>
-                <View scrollEnabled={false} style={styles.styleConfirmationWindow} >
-                    <TextInput 
-                                autoFocus
-                                style={styles.habitInput}
-                                returnKeyType='done'
-                                maxLength={50}
-                                onSubmitEditing={(event) => this.textInputSubmit(event.nativeEvent.text) }
-                                onChangeText={(text)=> this.setState({ inputText: text}) }
-                                placeholder="Enter habit"
-                                ref={input => { this.textInput = input }}
-                                paddingRight={42}
-                                >
-                        
-                    </TextInput>
-                        <TouchableOpacity style={styles.goIconWrapper} onPress={() => this.textInputSubmit(this.state.inputText)}>
-                            <Image
-                                    style={styles.goIcon}
-                                    source={GoIcon}
-                                />
-                        </TouchableOpacity>
-                        <View style={styles.checkboxView}>
-                            <CheckBox
-                                disabled={false}
-                                value={this.state.inputCheckbox}
-                                onValueChange={() => this.setState((state) => { return { inputCheckbox: !state.inputCheckbox }})}
-                            />
-                            <Text onPress=  {
-                                                () => 
-                                                { 
-                                                    this.setState((state) => { return { inputCheckbox: !state.inputCheckbox }})
-                                                }
-                                            }>
-                                    Reset progress on missed day
-                            </Text>
-                        </View>
-                    <TouchableOpacity style={styles.cancelInput} onPress={() => this.setState({ inputWindow: false })}>
-                            <Text style={styles.buttonText}>Cancel</Text>
-                    </TouchableOpacity>
-                </View>
-                    
-            </View>
+            <EditHabit 
+                inputCheckbox={this.state.inputCheckbox}
+                callbackSetStateCheckbox={this.callbackSetStateCheckbox.bind(this)}
+                callbackSetStateCloseWindowInput={this.callbackSetStateCloseWindowInput.bind(this)}
+                textInputSubmit={this.textInputSubmit.bind(this)}
+            />
         );
     }
+
+    callbackSetStateCheckbox = () =>
+    {
+        return this.setState((state) => { return { inputCheckbox: !state.inputCheckbox }})
+    }
+    
+    callbackSetStateCloseWindowInput = () =>
+    {
+        return this.setState({ inputWindow: false })
+    }
+
+    callbackSetStateOnChangeText = (text) =>
+    {
+        return this.setState({ inputText: text});
+    }  
 
     componentDidMount()
     {
@@ -214,8 +183,6 @@ class Home extends React.Component
             });
     }
 
-    
-
     renderHabits = () => 
     {
         if(this.state.habits.length > 0) 
@@ -223,8 +190,6 @@ class Home extends React.Component
             return renderHabits(this.state.habits, this.toHabitScreen.bind(this), this.callConfirmationWindow.bind(this));
         }
     }
-    
- 
 
     checkAvailabillity = setInterval(() => 
     { 
@@ -282,12 +247,12 @@ class Home extends React.Component
 }
 
 const styles = StyleSheet.create({
-    habitInput: {
-        backgroundColor: "white",
-        
-        width: "90%",
-        borderRadius: 10,
+    styleConfirmationWindow: {
+        marginTop: "10%",
         height: "25%",
+        width: "90%",
+        alignItems: "center",
+        borderRadius: 10,
     },
     habitTouchableOp: {
         backgroundColor: "#E0D5C8",
@@ -309,13 +274,7 @@ const styles = StyleSheet.create({
         width: "100%",
         marginTop: "3%"
     },
-    styleConfirmationWindow: {
-        marginTop: "10%",
-        height: "25%",
-        width: "90%",
-        alignItems: "center",
-        borderRadius: 10,
-    },
+    
     deleteButton: {
         backgroundColor: "#59524C",
         width: "50%",
@@ -333,12 +292,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 5,
         borderRadius: 10
-    },
-    buttonText: {
-        color: "white",
-        fontWeight: 'bold',
-		fontFamily: "monospace", 
-		fontSize: 16
     },
     habitTitleDeleteRequest:
     {
@@ -362,40 +315,17 @@ const styles = StyleSheet.create({
         marginRight: 12,
         opacity: 0.5
     },
-    goIcon: {
-        width: "100%",
-        height: "100%",
-        position: "absolute",
-        right: -10,
-        transform: [{ rotate: '45deg' }]
-    },
-    goIconWrapper: {
-        width: "15%",
-        height: "25%",
-        position: "absolute",
-        marginTop: 5,
-        right: 0
-    },
-    cancelInput: {
-        backgroundColor: "#D99982",
-        width: "50%",
-        height: "20%",
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 5,
-        borderRadius: 10
-    },
-    checkboxView: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        marginVertical: "2%"
-    },
     stageStyle: {
         position: "absolute",
         top: "15%",
         left: "2.5%",
         fontFamily: "serif"
+    },
+    buttonText: {
+        color: "white",
+        fontWeight: 'bold',
+		fontFamily: "monospace", 
+		fontSize: 16
     }
 });
 
