@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {
   StyleSheet,
   View,
-  Text,
   TouchableOpacity,
   ScrollView,
   Image
@@ -17,12 +16,12 @@ import DeviceInfo from "react-native-device-info";
 
 
 import { getArrayOfLists } from './helpers/habitList/getArrayOfLists';
-import { confirmationWrapper } from "./styling/styles";
 import { resetNotification } from './helpers/habitList/resetNotification';
 
 import { renderHabits } from "./sub-components/renderHabits/renderHabits";
 import AddHabit from './sub-components/habitsAdding/AddHabit';
-import { renderHabitOptionsWindow } from "./sub-components/habitsOptions/habitsOptions"; 
+import { renderHabitOptionsWindow } from "./sub-components/habitsOptions/habitsOptions";
+import EditWindow from "./sub-components/habitsOptions/editOption/editOption";
 
 class Home extends React.Component 
 {
@@ -34,7 +33,8 @@ class Home extends React.Component
             optionsRequest: false,
             optionsRequestHabit: {},
             inputWindow: false,
-            inputCheckbox: false
+            inputCheckbox: false,
+            toggleEditMode: false
         };
 
         this.checkboxRef = React.createRef();
@@ -140,6 +140,11 @@ class Home extends React.Component
         return this.setState({optionsRequest: false});
     }
 
+    callbackSetStateToggleEditMode = (value) =>
+    {
+        return this.setState({ toggleEditMode: value });
+    } 
+
     componentDidMount()
     {
         this.showValue(); 
@@ -215,9 +220,13 @@ class Home extends React.Component
 
     render () 
     {
+        //due to re-render while toggled edit menu it does not go inside if condition
+        var habitId = this.state.optionsRequestHabit[0];
+        
         if (this.state.optionsRequest)
-            {
-                var habitTitle = this.state.optionsRequestHabit[1].text;
+        {
+            var habitTitle = this.state.optionsRequestHabit[1].text;
+                console.log(habitId);
             }
 
         return (
@@ -229,7 +238,15 @@ class Home extends React.Component
 				</ScrollView>
 
             { this.state.inputWindow && this.showInputWindow() }
-            { this.state.optionsRequest && renderHabitOptionsWindow(habitTitle, this.callbackSetStateCloseOptionsMenu.bind(this), this.deleteHabit.bind(this))}
+            { this.state.optionsRequest && renderHabitOptionsWindow(habitTitle, 
+                                                                    this.callbackSetStateCloseOptionsMenu.bind(this), 
+                                                                    this.deleteHabit.bind(this), 
+                                                                    this.callbackSetStateToggleEditMode.bind(this))}
+            { this.state.toggleEditMode && <EditWindow
+                                                habitId={habitId}
+                                                callbackSetStateToggleEditMode={this.callbackSetStateToggleEditMode.bind(this)}
+                                                showValue={this.showValue.bind(this)}
+                                            />}
             </View>
         );
     }
