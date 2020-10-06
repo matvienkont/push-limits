@@ -37,9 +37,11 @@ export const stageStylingForHome = () =>
 {  
     return {
         position: "absolute",
+        textAlign: "center",
+        width: "3%",
         top: "45%",
         left: "2.5%",
         fontFamily: "serif",
-        fontSize: 16
+        fontSize: 16,
     }
 }

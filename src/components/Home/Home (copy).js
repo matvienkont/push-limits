@@ -22,7 +22,6 @@ import { resetNotification } from './helpers/habitList/resetNotification';
 
 import { renderHabits } from "./sub-components/renderHabits/renderHabits";
 import AddHabit from './sub-components/habitsAdding/AddHabit';
-import { renderHabitOptionsWindow } from "./sub-components/habitsOptions/habitsOptions"; 
 
 class Home extends React.Component 
 {
@@ -31,8 +30,8 @@ class Home extends React.Component
         super(props);
         this.state = {
             habits: [],
-            optionsRequest: false,
-            optionsRequestHabit: {},
+            deleteRequest: false,
+            deleteRequestHabit: '',
             inputWindow: false,
             inputCheckbox: false
         };
@@ -73,14 +72,14 @@ class Home extends React.Component
     callConfirmationWindow = (element) => 
     {   
         this.setState({
-            optionsRequest: true,
-            optionsRequestHabit: element
+            deleteRequest: true,
+            deleteRequestHabit: element
         });
     }
 
     deleteHabit = async () => 
     {
-        let habitId = this.state.optionsRequestHabit[0];
+        let habitId = this.state.deleteRequestHabit[0];
         try 
         {
             await AsyncStorage.removeItem(habitId);
@@ -90,6 +89,33 @@ class Home extends React.Component
         }
 
         this.showValue();
+        this.setState({ deleteRequest: false });
+    }
+
+    returnConfirmationWindow = () =>
+    {
+        if (this.state.deleteRequest)
+        {
+        let habitTitle = this.state.deleteRequestHabit[1].text;
+            return (
+                <View style={confirmationWrapper()} >
+                    <View style={styles.styleConfirmationWindow} >
+                        <View style={styles.habitTitleDeleteRequestWrapper} >
+                            <Text style={ styles.habitTitleDeleteRequest }>{habitTitle}</Text>
+                        </View>    
+                        <TouchableOpacity style={[styles.deleteButton, styles.buttonOptions]} onPress={() => this.deleteHabit() }>
+                            <Text style={styles.buttonText}>Delete</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.editButton, styles.buttonOptions]} onPress={() => this.setState({ deleteRequest: false })}>
+                            <Text style={styles.buttonText}>Edit</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.cancelButton, styles.buttonOptions]} onPress={() => this.setState({ deleteRequest: false })}>
+                            <Text style={styles.buttonText}>Keep it</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+        }
     }
 
     textInputSubmit = (text) => 
@@ -118,7 +144,6 @@ class Home extends React.Component
         );
     }
 
-    //input window
     callbackSetStateCheckbox = () =>
     {
         return this.setState((state) => { return { inputCheckbox: !state.inputCheckbox }})
@@ -132,13 +157,7 @@ class Home extends React.Component
     callbackSetStateOnChangeText = (text) =>
     {
         return this.setState({ inputText: text});
-    }
-
-    //options menu
-    callbackSetStateCloseOptionsMenu = () =>
-    {
-        return this.setState({optionsRequest: false});
-    }
+    }  
 
     componentDidMount()
     {
@@ -147,7 +166,7 @@ class Home extends React.Component
             headerRight: () => (
                     <TouchableOpacity onPress={() => 
                                                 { 
-                                                    if(!this.state.optionsRequest) 
+                                                    if(!this.state.deleteRequest) 
                                                         this.setState({ inputWindow: true })
                                                 }} >
                         <Image
@@ -215,11 +234,6 @@ class Home extends React.Component
 
     render () 
     {
-        if (this.state.optionsRequest)
-            {
-                var habitTitle = this.state.optionsRequestHabit[1].text;
-            }
-
         return (
             <View>
                 <ScrollView style={styles.scrollViewHome} contentContainerStyle={{flexGrow:1}} keyboardShouldPersistTaps="always">
@@ -229,14 +243,20 @@ class Home extends React.Component
 				</ScrollView>
 
             { this.state.inputWindow && this.showInputWindow() }
-            { this.state.optionsRequest && renderHabitOptionsWindow(habitTitle, this.callbackSetStateCloseOptionsMenu.bind(this), this.deleteHabit.bind(this))}
+            { this.returnConfirmationWindow() }
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    
+    styleConfirmationWindow: {
+        marginTop: "10%",
+        height: "25%",
+        width: "90%",
+        alignItems: "center",
+        borderRadius: 10,
+    },
     habitTouchableOp: {
         backgroundColor: "#E0D5C8",
         alignItems: "center",
@@ -256,7 +276,40 @@ const styles = StyleSheet.create({
     fullWidth: {
         width: "100%",
         marginTop: "3%"
-    },   
+    },
+    buttonOptions:
+    {
+        width: "50%",
+        height: "35%",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 5,
+        borderRadius: 10,
+    },
+    deleteButton: {
+        backgroundColor: "#59524C"
+    },
+    cancelButton: {
+        backgroundColor: "#D99982"
+    },
+    editButton: {
+        backgroundColor: "#6F8C86",
+    },
+    habitTitleDeleteRequest:
+    {
+        paddingLeft: "2%",
+        paddingRight: "2%",
+        fontSize: 16
+    },    
+    habitTitleDeleteRequestWrapper: {
+        borderRadius: 10,
+        minHeight: "7%",
+        padding: 10,
+        backgroundColor: "white",
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center"
+    },
     plusIcon: {
         width: 35,
         height: 35,
@@ -269,6 +322,12 @@ const styles = StyleSheet.create({
         top: "15%",
         left: "2.5%",
         fontFamily: "serif"
+    },
+    buttonText: {
+        color: "white",
+        fontWeight: 'bold',
+		fontFamily: "monospace", 
+		fontSize: 16
     }
 });
 

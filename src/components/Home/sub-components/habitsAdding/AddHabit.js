@@ -11,7 +11,7 @@ import CheckBox from '@react-native-community/checkbox';
 import { confirmationWrapper } from "../../styling/styles";
   
 
-export default class EditHabit extends React.Component
+export default class AddHabit extends React.Component
 {
     constructor(props)
     {
