@@ -240,9 +240,10 @@ class Home extends React.Component
 				</ScrollView>
 
             { this.state.inputWindow && this.showInputWindow() }
-            { this.state.optionsRequest && renderHabitOptionsWindow(habitTitle, 
+            { this.state.optionsRequest && renderHabitOptionsWindow(habitTitle,
+                                                                    habitId,
                                                                     this.callbackSetStateCloseOptionsMenu.bind(this), 
-                                                                    this.deleteHabit.bind(this), 
+                                                                    this.showValue.bind(this), 
                                                                     this.callbackSetStateToggleEditMode.bind(this))}
             { this.state.toggleEditMode && <EditWindow
                                                 habitId={habitId}
@@ -256,23 +257,6 @@ class Home extends React.Component
 }
 
 const styles = StyleSheet.create({
-    
-    habitTouchableOp: {
-        backgroundColor: "#E0D5C8",
-        alignItems: "center",
-        minHeight: 50,
-        justifyContent: "center",
-        marginBottom: 10,
-        shadowColor: "#000",
-        shadowOffset: {
-	        width: 0,
-	        height: 1,
-        },
-        shadowOpacity: 0.22,
-        shadowRadius: 2.22,
-
-        elevation: 7
-    },
     fullWidth: {
         width: "100%",
         marginTop: "3%"
@@ -283,12 +267,6 @@ const styles = StyleSheet.create({
         marginTop: 2,
         marginRight: 12,
         opacity: 0.5
-    },
-    stageStyle: {
-        position: "absolute",
-        top: "15%",
-        left: "2.5%",
-        fontFamily: "serif"
     }
 });
 

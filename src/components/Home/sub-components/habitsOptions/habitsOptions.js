@@ -5,8 +5,9 @@ import {
     TouchableOpacity, StyleSheet
 } from "react-native";
 import { confirmationWrapper } from "../../styling/styles";
+import { deleteHabit } from "./deleteOption/deleteHabit";
 
-export const renderHabitOptionsWindow = (habitTitle, callbackSetStateCloseOptionsMenu, deleteHabit, callbackSetStateToggleEditMode) =>
+export const renderHabitOptionsWindow = (habitTitle, habitId, callbackSetStateCloseOptionsMenu, showValue, callbackSetStateToggleEditMode) =>
 {
     return (
         <View style={confirmationWrapper()} >
@@ -16,7 +17,7 @@ export const renderHabitOptionsWindow = (habitTitle, callbackSetStateCloseOption
                 </View>    
                 <TouchableOpacity style={[styles.deleteButton, styles.buttonOptions]} onPress={() => { 
                                                                                                         callbackSetStateCloseOptionsMenu();
-                                                                                                        deleteHabit();
+                                                                                                        deleteHabit(habitId, showValue);
                                                                                                     }}>
                     <Text style={styles.buttonText}>Delete</Text>
                 </TouchableOpacity>
