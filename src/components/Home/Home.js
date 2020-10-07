@@ -220,14 +220,16 @@ class Home extends React.Component
 
     render () 
     {
-        //due to re-render while toggled edit menu it does not go inside if condition
-        var habitId = this.state.optionsRequestHabit[0];
-        
+        //due to re-render while toggled edit menu it does not go inside second if condition
+        if (Object.keys(this.state.optionsRequestHabit).length !== 0)
+        {
+            var habitId = this.state.optionsRequestHabit[0];
+            var habitText = this.state.optionsRequestHabit[1].text;
+        }
         if (this.state.optionsRequest)
         {
             var habitTitle = this.state.optionsRequestHabit[1].text;
-                console.log(habitId);
-            }
+        }
 
         return (
             <View>
@@ -244,6 +246,7 @@ class Home extends React.Component
                                                                     this.callbackSetStateToggleEditMode.bind(this))}
             { this.state.toggleEditMode && <EditWindow
                                                 habitId={habitId}
+                                                habitText={habitText}
                                                 callbackSetStateToggleEditMode={this.callbackSetStateToggleEditMode.bind(this)}
                                                 showValue={this.showValue.bind(this)}
                                             />}

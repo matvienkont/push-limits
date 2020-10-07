@@ -40,6 +40,7 @@ export default class EditWindow extends React.Component
         var {
             callbackSetStateToggleEditMode,
             habitId,
+            habitText,
             showValue
         } = this.props;
         return (
@@ -50,6 +51,7 @@ export default class EditWindow extends React.Component
                                 style={styles.habitInput}
                                 returnKeyType='done'
                                 maxLength={50}
+                                defaultValue={habitText}
                                 onSubmitEditing={(event) => saveChanges(habitId, 
                                                             event.nativeEvent.text, 
                                                             this.state.inputCheckbox, 
