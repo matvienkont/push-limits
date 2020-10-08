@@ -12,7 +12,7 @@ import GoIcon from '../../../../../icons/go.png';
 import CheckBox from '@react-native-community/checkbox';
 import { confirmationWrapper } from "../../../styling/styles";
 
-import { saveChanges } from "./saveChanges";
+import { validateTitleChanges } from "./validateTitleChanges";
 
 export default class EditWindow extends React.Component
 {
@@ -52,7 +52,7 @@ export default class EditWindow extends React.Component
                                 returnKeyType='done'
                                 maxLength={50}
                                 defaultValue={habitText}
-                                onSubmitEditing={(event) => saveChanges(habitId, 
+                                onSubmitEditing={(event) => validateTitleChanges(habitId, 
                                                             event.nativeEvent.text, 
                                                             this.state.inputCheckbox, 
                                                             callbackSetStateToggleEditMode,
@@ -63,7 +63,7 @@ export default class EditWindow extends React.Component
                                 >
                         
                     </TextInput>
-                        <TouchableOpacity style={styles.goIconWrapper} onPress={() => saveChanges(habitId, 
+                        <TouchableOpacity style={styles.goIconWrapper} onPress={() => validateTitleChanges(habitId, 
                                                                                                 this.state.inputText, 
                                                                                                 this.state.inputCheckbox, 
                                                                                                 callbackSetStateToggleEditMode,

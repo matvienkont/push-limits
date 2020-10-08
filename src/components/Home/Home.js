@@ -9,11 +9,7 @@ import {
 } from 'react-native';
 
 import PlusIcon from '../../icons/plus-circle-512.png';
-
-
-
 import DeviceInfo from "react-native-device-info";
-
 
 import { getArrayOfLists } from './helpers/habitList/getArrayOfLists';
 import { resetNotification } from './helpers/habitList/resetNotification';
@@ -22,6 +18,7 @@ import { renderHabits } from "./sub-components/renderHabits/renderHabits";
 import AddHabit from './sub-components/habitsAdding/AddHabit';
 import { renderHabitOptionsWindow } from "./sub-components/habitsOptions/habitsOptions";
 import EditWindow from "./sub-components/habitsOptions/editOption/editOption";
+import { habitTextValidation } from './helpers/habitTextValidation/habitTextValidation';
 
 class Home extends React.Component 
 {
@@ -59,8 +56,6 @@ class Home extends React.Component
         }
     }
 
-    
-
     toHabitScreen = (element) => {
         const habitId = element[0];
         const habitTitle = element[1].text;
@@ -78,34 +73,6 @@ class Home extends React.Component
         });
     }
 
-    deleteHabit = async () => 
-    {
-        let habitId = this.state.optionsRequestHabit[0];
-        try 
-        {
-            await AsyncStorage.removeItem(habitId);
-        } catch (e)
-        {
-            console.log(e);
-        }
-
-        this.showValue();
-    }
-
-    textInputSubmit = (text) => 
-    {
-        if (text)
-            {
-                const regex = /^\w+/;
-                var result = regex.test(text);
-                
-                if(result)
-                    this.setItemtoAsyncStorage(text);
-            }
-                
-        this.setState({ inputWindow: false })
-    }
-
     showInputWindow = () => 
     {
         return (
@@ -113,15 +80,16 @@ class Home extends React.Component
                 inputCheckbox={this.state.inputCheckbox}
                 callbackSetStateCheckbox={this.callbackSetStateCheckbox.bind(this)}
                 callbackSetStateCloseWindowInput={this.callbackSetStateCloseWindowInput.bind(this)}
-                textInputSubmit={this.textInputSubmit.bind(this)}
+                showValue={this.showValue.bind(this)}
+                //textInputSubmit={habitTextValidation(this.callbackSetStateCloseWindowInput.bind(this))}
             />
         );
     }
 
     //input window
-    callbackSetStateCheckbox = () =>
+    callbackSetStateCheckbox = (value=!this.state.inputCheckbox) =>
     {
-        return this.setState((state) => { return { inputCheckbox: !state.inputCheckbox }})
+        return this.setState((state) => { return { inputCheckbox: value }})
     }
     
     callbackSetStateCloseWindowInput = () =>
@@ -191,31 +159,6 @@ class Home extends React.Component
     componentWillUnmount ()
     {
         clearInterval(this.checkAvailabillity); 
-    }
-
-    setItemtoAsyncStorage = async (text) => 
-    {
-        const value = {
-            text: text,
-            progress: 19,
-            stage: 5,
-            date: Date.now(),
-            last_button_press: '' ,
-            isActive: true,
-            resettable: this.state.inputCheckbox  
-        }
-
-        this.setState({ inputCheckbox: false });
-
-        const key = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
-        try {
-            const jsonValue = JSON.stringify(value);
-            await AsyncStorage.setItem(key, jsonValue);
-            this.showValue();
-        } catch(e) {
-            console.log(e);
-        }
     }
 
     render () 

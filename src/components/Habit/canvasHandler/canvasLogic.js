@@ -1,4 +1,4 @@
-import { dynamicSpiralParameters } from "../../../helpers/spiralParameters";
+import { dynamicSpiralParameters } from "../../../helpers/positionParameters/spiralParameters";
 import { Dimensions,
          View,
          StyleSheet } from "react-native";

@@ -16,7 +16,6 @@ export const getArrayOfLists = async () =>
                 if(currentDate - element[1].last_button_press > timeToReset)
                 {
                     element[1].progress = 0;
-                    element[1].stage = 1;
                     element[1].last_button_press = '';
                     resetCounter += 1;
                     object = JSON.stringify(element[1]);

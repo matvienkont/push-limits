@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage"
 
-export const saveChanges = async (habitId, newTitle, resettable, callbackSetStateToggleEditMode, showValue) =>
+export const saveChanges = async (habitId, newTitle, resettable, showValue) =>
 {
     var data = await AsyncStorage.getItem(habitId);
     var object = JSON.parse(data);
@@ -16,6 +16,4 @@ export const saveChanges = async (habitId, newTitle, resettable, callbackSetStat
     } catch(e) {
         console.log(e);
     }
-
-    callbackSetStateToggleEditMode();
 }

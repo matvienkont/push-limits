@@ -9,6 +9,7 @@ import {
 import GoIcon from '../../../../icons/go.png';
 import CheckBox from '@react-native-community/checkbox';
 import { confirmationWrapper } from "../../styling/styles";
+import { habitTextValidation } from "../../helpers/habitTextValidation/habitTextValidation";
   
 
 export default class AddHabit extends React.Component
@@ -26,7 +27,7 @@ export default class AddHabit extends React.Component
             inputCheckbox,
             callbackSetStateCheckbox,
             callbackSetStateCloseWindowInput,
-            textInputSubmit
+            showValue
         } = this.props;
         return (
             <View scrollEnabled={false} style={confirmationWrapper()}>
@@ -36,14 +37,14 @@ export default class AddHabit extends React.Component
                                 style={styles.habitInput}
                                 returnKeyType='done'
                                 maxLength={50}
-                                onSubmitEditing={(event) => textInputSubmit(event.nativeEvent.text) }
+                                onSubmitEditing={(event) => habitTextValidation(callbackSetStateCloseWindowInput, callbackSetStateCheckbox, showValue, event.nativeEvent.text, inputCheckbox) }
                                 onChangeText={(text)=> this.setState({ inputText: text})}
                                 placeholder="Enter habit"
                                 paddingRight={42}
                                 >
                         
                     </TextInput>
-                        <TouchableOpacity style={styles.goIconWrapper} onPress={() => textInputSubmit(this.state.inputText)}>
+                        <TouchableOpacity style={styles.goIconWrapper} onPress={() => habitTextValidation(callbackSetStateCloseWindowInput, callbackSetStateCheckbox, showValue, this.state.inputText, inputCheckbox) }>
                             <Image
                                     style={styles.goIcon}
                                     source={GoIcon}

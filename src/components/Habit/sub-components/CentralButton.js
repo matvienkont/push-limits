@@ -5,7 +5,7 @@ import { Dimensions,
          TouchableOpacity,
          Text } from "react-native";
 
-import { dynamicButtonParameters } from "../../../helpers/buttonParameters";
+import { dynamicButtonParameters } from "../../../helpers/positionParameters/buttonParameters";
 
 
 export default class CentralButton extends React.Component
