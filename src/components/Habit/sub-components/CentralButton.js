@@ -6,6 +6,7 @@ import { Dimensions,
          Text } from "react-native";
 
 import { dynamicButtonParameters } from "../../../helpers/positionParameters/buttonParameters";
+import { counterFunc } from "../helpers/buttonHandlers/counterFunc";
 
 
 export default class CentralButton extends React.Component
@@ -91,6 +92,13 @@ export default class CentralButton extends React.Component
 
     render()
     {
+        var {
+            habitId,
+            setStateCounter,
+            setStateButtonDisabled,
+            initializeProceedRequest
+        } = this.props;
+
         return (
             <>      
             <Animated.View
@@ -105,7 +113,7 @@ export default class CentralButton extends React.Component
             </Animated.View>
             <TouchableOpacity 
                 style={ this.styleObjectForButtonWrapper() }
-                onPress={ this.props.counterFunc }
+                onPress={() => counterFunc(habitId, initializeProceedRequest, setStateCounter, setStateButtonDisabled) }
                 disabled={this.props.button_disabled} 
                 ref={this.props.opacityRef} 
                 activeOpacity={0.03}>

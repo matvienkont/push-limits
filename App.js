@@ -14,7 +14,7 @@ class App extends React.Component
 	
 		super(props);
 		initialiseNotifications();
-
+		 
 		this.state = 
 		{
             counter: 0,
@@ -29,7 +29,6 @@ class App extends React.Component
 	UNSAFE_componentWillMount () 
 	{
 		PushNotification.cancelAllLocalNotifications();
-		
 		scheduleNotifications();
 	}
 

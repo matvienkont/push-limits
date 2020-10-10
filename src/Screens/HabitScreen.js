@@ -17,7 +17,11 @@ class HabitScreen extends React.Component {
   	render () {
 	  	return (
 				<View style={styles.border}>
-					<Habit navigation={ this.props.navigation } habitId={this.habitID} habitTitle={this.habitTITLE} habitStage={this.habitStage} getCounter={this.props.getCounter}/>
+					<Habit  navigation={ this.props.navigation } 
+							habitId={this.habitID} 
+							habitTitle={this.habitTITLE} 
+							habitStage={this.habitStage} 
+							getCounter={this.props.getCounter}/>
 				</View>
 		);
 	}

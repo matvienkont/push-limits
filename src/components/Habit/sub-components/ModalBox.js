@@ -6,7 +6,10 @@ import {
     TouchableOpacity,
     Text,
     StyleSheet
-} from "react-native"
+} from "react-native";
+
+import { handleNextStageQuery } from "../helpers/buttonHandlers/handleNextStageQuery";
+import { refreshStageAfterProceed } from "../helpers/refreshStageAfterProceed";
 
 export default class ModalBox extends Component 
 {
@@ -15,13 +18,23 @@ export default class ModalBox extends Component
         super(props);
     }
 
-    triggerModal = () =>
+    triggerModalOpening = () =>
     {
         this.refs.requestModal.open();
     }
 
+    triggerModalClosing = () =>
+    {
+        this.refs.requestModal.close();
+    }
+
     render () 
     {
+        var {
+            habitId,
+            callRequest,
+            refreshStageCallback
+        } = this.props;
         return (
             <Modal
                     style={styles.modalWrapper}
@@ -37,13 +50,16 @@ export default class ModalBox extends Component
                                 <View style={styles.opacityWrapper}>
                                     <TouchableOpacity
                                         style={[styles.opacities, styles.yesOpacity]}
-                                        onPress={() => this.props.handleNextStageQuery(true)} 
+                                        onPress={() => {
+                                            refreshStageAfterProceed(habitId, refreshStageCallback);
+                                            handleNextStageQuery(true, habitId, this.props.callbackProceedRequest, this.props.callbackProceedRequestDeclined, callRequest)
+                                        }}
                                     >
                                             <Text style={styles.options}>YES</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         style={[styles.opacities, styles.noOpacity]}
-                                        onPress={() => this.props.handleNextStageQuery(false)}
+                                        onPress={() => handleNextStageQuery(false, habitId, this.props.callbackProceedRequest, this.props.callbackProceedRequestDeclined, callRequest)}
                                         >
                                         <Text style={styles.options}>NO</Text>
                                     </TouchableOpacity>

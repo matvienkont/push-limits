@@ -32,7 +32,7 @@ export default class Stage extends React.Component
 
     render() {
         return (
-        <Text style={this.stageStyle()}>{romanize(this.props.stage)}</Text>
+            <Text style={this.stageStyle()}>{romanize(this.props.stage)}</Text>
         );
     };
 }
