@@ -1,4 +1,4 @@
-package com.limitsbeta;
+package com.limits;
 
 import android.app.Application;
 import android.content.Context;

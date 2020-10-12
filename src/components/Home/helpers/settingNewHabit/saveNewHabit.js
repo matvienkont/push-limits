@@ -4,8 +4,8 @@ export const setItemtoAsyncStorage = async (inputText, inputCheckbox, callbackSe
 {
     const value = {
         text: inputText,
-        progress: 19,
-        stage: 5,
+        progress: 0,
+        stage: 1,
         date: Date.now(),
         last_button_press: '' ,
         isActive: true,
