@@ -1,0 +1,102 @@
+import { dynamicSpiralParameters } from "../../../helpers/positionParameters/spiralParameters";
+import { Dimensions,
+         View,
+         StyleSheet } from "react-native";
+import React from "react";
+import Canvas from "react-native-canvas";
+
+export default class CanvasSpiral extends React.Component
+{
+    position = () => 
+    {
+        var colour = '';
+        if(this.i < this.props.counter)
+            colour = "#D99982"
+                else if (this.i == this.props.counter || this.i == this.props.counter && this.i == 0)
+                    colour = "#59524C"; 
+                        else
+                            colour = "#FFF"
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.spiralParams.x_loc, this.spiralParams.y_loc);
+        for (var n = 0; n < 10; n++) 
+        {
+            this.ctx.lineWidth = this.spiralParams.lineWidth;
+            this.ctx.strokeStyle = colour;
+            this.spiralParams.radius += 0.05;
+            this.spiralParams.angle += ((Math.PI * 2) /53);
+            
+            this.spiralParams.x_loc = this.spiralParams.x_loc + this.spiralParams.radius * Math.cos(this.spiralParams.angle);
+            this.spiralParams.y_loc = this.spiralParams.y_loc + this.spiralParams.radius * Math.sin(this.spiralParams.angle);
+            this.ctx.lineTo(this.spiralParams.x_loc, this.spiralParams.y_loc);
+            
+        }
+            this.ctx.stroke();
+        this.spiralParams.x_loc = this.spiralParams.x_loc + this.spiralParams.radius * Math.cos(this.spiralParams.angle);
+        this.spiralParams.y_loc = this.spiralParams.y_loc + this.spiralParams.radius * Math.sin(this.spiralParams.angle);
+        this.i++;
+
+        if(this.i >= 21)
+        {
+            cancelAnimationFrame();
+        } else 
+        {
+            requestAnimationFrame(()=>this.position());
+        }
+    }
+
+    ctx = {};
+    screenWidth = Dimensions.get('window').width;
+    screenHeight = Dimensions.get('window').height;
+    spiralParams = dynamicSpiralParameters(this.screenWidth, this.screenHeight)
+    i = 0;
+
+    handleCanvas = (canvas) => 
+    {
+        if (canvas !== null) 
+        {
+            this.ctx = canvas.getContext('2d');
+                canvas.width  = this.screenWidth;
+                canvas.height = this.screenHeight;
+
+                this.position();
+        }
+        
+    };
+
+    borderMargin = () => 
+    {
+        return { 
+            position: "absolute",
+            backgroundColor: "rgba(52, 52, 52, 0)",
+            width: "100%"
+        }
+    };
+
+    render ()
+    {
+        return (
+                <View style={this.borderMargin()}>
+                        <View style={styles.canvasWrapper} >
+                            <Canvas key={"habit"} ref={this.handleCanvas}/>
+                        </View>
+                </View>
+            
+        );
+    }
+};
+
+const styles = StyleSheet.create({
+	border: {
+        marginLeft: 60,
+        position: "absolute",
+		backgroundColor: "rgba(52, 52, 52, 0)",
+		borderWidth: 5,
+	},
+    canvasWrapper: {
+        width: "100%",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    }
+});

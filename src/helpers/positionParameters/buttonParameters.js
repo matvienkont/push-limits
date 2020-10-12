@@ -3,7 +3,6 @@ export const dynamicButtonParameters = (screenWidth, screenHeight) =>
 	var shiftFactorX = 30;
 	var shiftFactorY = 0; 
 
-
     if (screenWidth<361)
     {
         shiftFactorX = 115;

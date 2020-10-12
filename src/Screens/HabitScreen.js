@@ -6,13 +6,9 @@ import {
   View,
 } from 'react-native';
 
-import Habit from '../components/Habit';
+import Habit from '../components/Habit/Habit';
 
 class HabitScreen extends React.Component {
-	constructor(props)
-	{
-		super(props);
-	}
 
 	habitID=this.props.route.params.habitId;
 	habitTITLE=this.props.route.params.habitTitle;
@@ -21,7 +17,11 @@ class HabitScreen extends React.Component {
   	render () {
 	  	return (
 				<View style={styles.border}>
-					<Habit navigation={ this.props.navigation } habitId={this.habitID} habitTitle={this.habitTITLE} habitStage={this.habitStage} getCounter={this.props.getCounter}/>
+					<Habit  navigation={ this.props.navigation } 
+							habitId={this.habitID} 
+							habitTitle={this.habitTITLE} 
+							habitStage={this.habitStage} 
+							getCounter={this.props.getCounter}/>
 				</View>
 		);
 	}

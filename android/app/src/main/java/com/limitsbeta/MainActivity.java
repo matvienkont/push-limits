@@ -1,4 +1,4 @@
-package com.limits;
+package com.limitsbeta;
 
 import com.facebook.react.ReactActivity;
 

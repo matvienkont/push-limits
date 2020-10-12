@@ -6,7 +6,6 @@ export const dynamicSpiralParameters = (screenWidth, screenHeight) =>
 	var angle = 0;
 	var lineWidth = 13;
 
-
 	if(screenWidth < 361)
 	{
 		radius = 8;
@@ -42,9 +41,6 @@ export const dynamicSpiralParameters = (screenWidth, screenHeight) =>
 					{
 						shiftFactorY = -45;
 					}
-
-
-		
 
 	var x_loc = (screenWidth+shiftFactorX)/2;
 	var y_loc = (screenHeight-shiftFactorY)/2;	

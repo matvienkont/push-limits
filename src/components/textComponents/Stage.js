@@ -3,15 +3,10 @@ import  {
             Text,
         } from "react-native";
 
-import romanize from "../helpers/romanNumerals";
+import romanize from "../../helpers/converters/romanNumerals";
 
 export default class Stage extends React.Component 
-{
-    constructor (props)
-    {
-        super(props);
-    }
-    
+{   
     currentStage = this.props.stage;
 
     stageStyle = () => {
@@ -37,7 +32,7 @@ export default class Stage extends React.Component
 
     render() {
         return (
-        <Text style={this.stageStyle()}>{romanize(this.props.stage)}</Text>
+            <Text style={this.stageStyle()}>{romanize(this.props.stage)}</Text>
         );
     };
 }

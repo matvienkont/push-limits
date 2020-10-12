@@ -8,13 +8,9 @@ import {
   Dimensions,
   ScrollView
 } from 'react-native';
-import Home from "../components/Home";
+import Home from "../components/Home/Home";
 
 class HomeScreen extends React.Component {
-	constructor(props)
-	{
-		super(props);
-	}
 
 	willFocus = this.props.navigation.addListener(
 		'willFocus',
@@ -22,10 +18,6 @@ class HomeScreen extends React.Component {
 		this.forceUpdate();
 		}
   	);
-
-	
-
-
 
   	render() {
 		  	return (
