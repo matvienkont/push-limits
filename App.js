@@ -5,7 +5,7 @@ import scheduleNotifications from "./src/helpers/notifications/scheduleNotificat
 import PushNotification from "react-native-push-notification";
 import FlashMessage from "react-native-flash-message";
 
-import Navigation from "./src/components/navigation/navigationInit";
+import Navigation from "./src/components/initAppNavigation/navigationInit";
 
 
 class App extends React.Component 

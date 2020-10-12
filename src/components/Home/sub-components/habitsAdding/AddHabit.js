@@ -21,6 +21,7 @@ export default class AddHabit extends React.Component
             inputText: ''
         }
     }
+    
     render ()
     {
         var {

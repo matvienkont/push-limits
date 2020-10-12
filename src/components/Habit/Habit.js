@@ -14,7 +14,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import CentralButton from "./sub-components/CentralButton";
 import { StatusBar } from "react-native";
-import { optionsToNavigationBar } from "../navigation/helpers/optionsToNavigationBar";
+import { optionsToNavigationBar } from "../initAppNavigation/helpers/optionsToNavigationBar";
 import { stageStyling } from "./styling/stageStyling";
 import ModalBox from "./sub-components/ModalBox";
 import { triggerFlashMessage } from "./helpers/triggerFlashMessage";

@@ -12,7 +12,7 @@ export const getArrayOfLists = async () =>
             if(element[1].last_button_press && element[1].resettable)
             {
                 var currentDate = new Date().getTime()
-                const timeToReset = 10000//88200000; //24.5 hours
+                const timeToReset = 88200000; //24.5 hours
                 if(currentDate - element[1].last_button_press > timeToReset)
                 {
                     element[1].progress = 0;

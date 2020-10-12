@@ -18,9 +18,7 @@ export const buttonTimeHandler = async (habitId, counter, buttonDisabled) =>
                 buttonDisabled(true);
             }
         }
-        //temp
-        buttonDisabled(false);
-        //
+
         if ( object.progress == 21 )
         {
             buttonDisabled(true);

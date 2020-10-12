@@ -18,7 +18,6 @@ import { renderHabits } from "./sub-components/renderHabits/renderHabits";
 import AddHabit from './sub-components/habitsAdding/AddHabit';
 import { renderHabitOptionsWindow } from "./sub-components/habitsOptions/habitsOptions";
 import EditWindow from "./sub-components/habitsOptions/editOption/editOption";
-import { habitTextValidation } from './helpers/habitTextValidation/habitTextValidation';
 
 class Home extends React.Component 
 {
@@ -81,7 +80,6 @@ class Home extends React.Component
                 callbackSetStateCheckbox={this.callbackSetStateCheckbox.bind(this)}
                 callbackSetStateCloseWindowInput={this.callbackSetStateCloseWindowInput.bind(this)}
                 showValue={this.showValue.bind(this)}
-                //textInputSubmit={habitTextValidation(this.callbackSetStateCloseWindowInput.bind(this))}
             />
         );
     }

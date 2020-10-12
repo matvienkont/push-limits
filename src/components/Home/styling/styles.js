@@ -20,6 +20,7 @@ export const confirmationWrapper = () =>
         alignItems: 'center'
     }
 }
+
 export const remainingTimeStyles = (margin, rightPosition) => 
 {
     margin = `${margin}%`;

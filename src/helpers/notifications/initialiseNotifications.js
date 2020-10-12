@@ -10,7 +10,6 @@ export default initialiseNotifications = () =>
       
         onNotification: function (notification) {
           console.log("NOTIFICATION:", notification);		  
-      
           notification.finish();
         },
       

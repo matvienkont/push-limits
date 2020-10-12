@@ -1,4 +1,4 @@
-import triggerFlashMessage from "../triggerFlashMessage";
+import { triggerFlashMessage } from "../triggerFlashMessage";
 import AsyncStorage from "@react-native-community/async-storage";
 
 export const counterFunc = async (habitId, initializeProceedRequest, setStateCounter, setStateButtonDisabled ) => {
