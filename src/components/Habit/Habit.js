@@ -21,7 +21,6 @@ import { triggerFlashMessage } from "./helpers/triggerFlashMessage";
 import { fadeAnimationButton } from "./helpers/fadeAnimationButton";
 import { buttonTimeHandler } from "./helpers/buttonHandlers/buttonTimeHandler";
 
-
 class Habit extends React.Component 
 {
     constructor(props) {
@@ -86,7 +85,6 @@ class Habit extends React.Component
         clearInterval(this);
     }, 15000);
     
-
     componentWillUnmount () 
     {
        clearInterval(this.checkAvailabillity); 
@@ -131,8 +129,6 @@ class Habit extends React.Component
                                         }}, () => { this.setState() });       
     }
 
-
-    
     render() {
         return ( 
             <View style={{width: "100%", height: "100%"}}>
@@ -147,14 +143,16 @@ class Habit extends React.Component
                     callRequest={this.callRequest}
                 />
                 
-
             <View style={styles.border}>
                     <Bar key={this.state.counter} habitId={this.props.habitId}/>
                     { this.returnButton() }
                     <Text style={styles.habitTitle}>{this.props.habitTitle}</Text>
                     <View style={styles.stageWrapper}>
                         <Stage style={stageStyling} stage={this.state.currentStage} />
-                        <LinearGradient style={styles.gradient} colors={['rgba(255, 255, 255, 0.25)', '#D9CEC1', '#D9CEC1']}></LinearGradient>
+                        <LinearGradient 
+                            style={styles.gradient} 
+                            colors={['rgba(255, 255, 255, 0.25)', '#D9CEC1', '#D9CEC1']}>
+                        </LinearGradient>
                     </View>
                     { this.props.getCounter(this.state.counter) }
                 </View>

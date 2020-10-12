@@ -5,9 +5,8 @@ import { Dimensions,
          TouchableOpacity,
          Text } from "react-native";
 
-import { dynamicButtonParameters } from "../../../helpers/positionParameters/buttonParameters";
 import { counterFunc } from "../helpers/buttonHandlers/counterFunc";
-
+import { textStyleForButton, styleObjectForButtonWrapper } from "../styling/centralButton";
 
 export default class CentralButton extends React.Component
 {
@@ -55,20 +54,7 @@ export default class CentralButton extends React.Component
         }
     }
 
-    textStyleForButton = () =>
-    {
-        var textColour = this.props.button_disabled ? "rgba(0, 0, 0, 0.4)" : "rgba(0, 0, 0, 1)";
 
-        return {
-            alignSelf: 'center',
-            color: textColour,
-            fontFamily: "monospace",
-            fontSize: 15,
-            fontWeight: '900',
-            paddingTop: 10,
-            paddingBottom: 10,
-        }
-    }
 
     styleObjectForButtonWrapper = () => {
         
@@ -108,11 +94,11 @@ export default class CentralButton extends React.Component
                         }}>
                 <View
                         style={this.styleObjectForButton()}>
-                    <Text style={this.textStyleForButton()}>Nailed it</Text>
+                    <Text style={textStyleForButton(this.props.button_disabled)}>Nailed it</Text>
                 </View>
             </Animated.View>
             <TouchableOpacity 
-                style={ this.styleObjectForButtonWrapper() }
+                style={ styleObjectForButtonWrapper() }
                 onPress={() => counterFunc(habitId, initializeProceedRequest, setStateCounter, setStateButtonDisabled) }
                 disabled={this.props.button_disabled} 
                 ref={this.props.opacityRef} 

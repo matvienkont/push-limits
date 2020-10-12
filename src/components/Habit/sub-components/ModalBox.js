@@ -52,14 +52,22 @@ export default class ModalBox extends Component
                                         style={[styles.opacities, styles.yesOpacity]}
                                         onPress={() => {
                                             refreshStageAfterProceed(habitId, refreshStageCallback);
-                                            handleNextStageQuery(true, habitId, this.props.callbackProceedRequest, this.props.callbackProceedRequestDeclined, callRequest)
+                                            handleNextStageQuery(true, 
+                                                                habitId, 
+                                                                this.props.callbackProceedRequest, 
+                                                                this.props.callbackProceedRequestDeclined, 
+                                                                callRequest)
                                         }}
                                     >
                                             <Text style={styles.options}>YES</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         style={[styles.opacities, styles.noOpacity]}
-                                        onPress={() => handleNextStageQuery(false, habitId, this.props.callbackProceedRequest, this.props.callbackProceedRequestDeclined, callRequest)}
+                                        onPress={() => handleNextStageQuery(false,
+                                                                            habitId, 
+                                                                            this.props.callbackProceedRequest, 
+                                                                            this.props.callbackProceedRequestDeclined, 
+                                                                            callRequest)}
                                         >
                                         <Text style={styles.options}>NO</Text>
                                     </TouchableOpacity>

@@ -27,11 +27,5 @@ export const counterFunc = async (habitId, initializeProceedRequest, setStateCou
 
         setStateCounter(tempCounter);
         setStateButtonDisabled(true);
-        /*this.setState((state) => {
-            return {
-            button_disabled: true,
-            counter: tempCounter
-        }});*/
-
     }
 };
