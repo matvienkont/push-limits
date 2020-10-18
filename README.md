@@ -1,6 +1,7 @@
+![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
 # HEY
 ```
-![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+
 ├── src
 |  ├── Screens
 |  |  ├── HabitScreen.js
