@@ -5,5 +5,6 @@ This native application for Android was designed to cover up one's need in self-
 
 Used technologies: pure React Native without supportive CLIs, AsyncStorage for storing data and some libraries.
 
-The app has went through multiple code cleaning processes and was tried to be written in a good manner according to author's not huge skills :)
+The app has went through multiple code cleaning processes and was tried to be written in a good manner 
+according to author's not huge skills :)
 ```
