@@ -2,7 +2,7 @@ import PushNotification from "react-native-push-notification";
 
 export default scheduleNotifications = () => 
 {
-    var nextTimeNotification = Math.floor(36000000 + (14400000*((Math.random() * 2) - 1)));
+    var nextTimeNotification = 10000//Math.floor(36000000 + (14400000*((Math.random() * 2) - 1)));
     PushNotification.localNotificationSchedule({
         vibrate: true,
         vibration: 100,
