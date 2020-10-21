@@ -7,13 +7,13 @@ import FlashMessage from "react-native-flash-message";
 
 import Navigation from "./src/components/initAppNavigation/navigationInit";
 
+initialiseNotifications();
 
 class App extends React.Component 
 {
 	constructor(props) {
 	
 		super(props);
-		initialiseNotifications();
 		 
 		this.state = 
 		{
