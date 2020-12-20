@@ -13,7 +13,7 @@ export const renderHabits = (habits, toHabitScreen, callConfirmationWindow) =>
         const progressInPercent = Math.ceil(OBJECT.progress/21 * 100);
         var remainingTime = 0;
         var buttonAvailable = false;
-        const currentDate = new Date().getTime();
+        const currentDate = new Date();
         const currentStage = OBJECT.stage;
         const lastPress = OBJECT.last_button_press;
         const anotherDate = check_another_day(OBJECT);
@@ -22,10 +22,10 @@ export const renderHabits = (habits, toHabitScreen, callConfirmationWindow) =>
             buttonAvailable = true;
         } else if (OBJECT.isActive)
         {
-            const formattedLastPress = new Date(lastPress);
-            var nextDayIn = new Date(formattedLastPress.getFullYear(), formattedLastPress.getMonth(), formattedLastPress.getDate()+1, 0, 0, 0);
+            //const formattedLastPress = new Date(lastPress);
+            var nextDayIn = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+1, 0, 0, 0);
             
-            remainingTime = nextDayIn.getTime() - currentDate;
+            remainingTime = nextDayIn.getTime() - currentDate.getTime();
             //variable that contains remaining time under Progress Circle in the application
         } else {
             buttonAvailable = false;
